@@ -1,0 +1,16 @@
+[general]
+import = [
+    "~/.config/alacritty/dank-theme.toml"
+]
+
+[window]
+# opacity=0.9
+[window.padding]
+y = 6 
+x = 6  
+
+[font]
+normal = { family = "JetBrainsMono Nerd Font Propo", style = "Regular" }
+# normal = { family = "Iosevka Nerd Font Propo", style = "Regular" }
+# size = 20
+size = 14

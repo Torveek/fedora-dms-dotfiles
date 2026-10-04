@@ -1,0 +1,8 @@
+dms
+dms-cli
+dms-greeter
+quickshell
+matugen
+dgop
+niri
+xwayland-satellite

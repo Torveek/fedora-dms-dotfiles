@@ -1,0 +1,18 @@
+{
+  "lockfileVersion": 1,
+  "plugins": {
+    "dankDesktopWeather": {
+      "repo": "https://github.com/AvengeMedia/dms-plugins",
+      "path": "DankDesktopWeather",
+      "commit": "e774a9756f2a50499c37a5513f28bee4ebe81d73"
+    },
+    "dmsThemeSync": {
+      "repo": "https://github.com/arqueon/dms-theme-sync",
+      "commit": "090867723a05271d13c492104cf7c4c28028924b"
+    },
+    "pkgUpdate": {
+      "repo": "https://github.com/rahulmysore23/dms-pkg-update",
+      "commit": "a17dd21f6f72582ede70646db9d0eefc302d05bc"
+    }
+  }
+}

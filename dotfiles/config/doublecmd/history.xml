@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doublecmd>
+  <History>
+    <Navigation>
+      <Item Value="/home/torvik/repos/fedora-dms-dotfiles/"/>
+      <Item Value="/home/torvik/repos/"/>
+      <Item Value="/home/torvik/.gemini/antigravity-cli/brain/38ba6c57-dbb8-41ed-b879-8de6ca313424/"/>
+      <Item Value="/home/torvik/.gemini/antigravity-cli/brain/"/>
+      <Item Value="/home/torvik/.gemini/antigravity-cli/brain/f73584a9-37a6-4908-987d-df1a2373d7af/"/>
+      <Item Value="/home/torvik/.gemini/antigravity-cli/"/>
+      <Item Value="/home/torvik/.gemini/"/>
+      <Item Value="/home/torvik/.gemini/antigravity/"/>
+      <Item Value="/home/torvik/.gemini/antigravity/brain/"/>
+      <Item Value="/home/torvik/"/>
+      <Item Value="/home/torvik/Downloads/"/>
+      <Item Value="/home/torvik/.config/mozilla/firefox/chibtooc.default-release/"/>
+      <Item Value="/home/torvik/.local/share/Happ/routing/"/>
+      <Item Value="/home/"/>
+      <Item Value="/home/torvik/.config/"/>
+      <Item Value="/home/torvik/.config/VSCodium/"/>
+      <Item Value="/home/torvik/.config/nvim/"/>
+      <Item Value="/home/torvik/fedora-dms-dotfiles/"/>
+      <Item Value="/home/torvik/fedora-dms-dotfiles/home/"/>
+      <Item Value="/home/torvik/fedora-dms-dotfiles/home/.local/"/>
+      <Item Value="/home/torvik/fedora-dms-dotfiles/home/.config/"/>
+      <Item Value="/home/torvik/fedora-dms-dotfiles/systemd/"/>
+      <Item Value="/home/torvik/fedora-dms-dotfiles/system/"/>
+      <Item Value="/home/torvik/fedora-dms-dotfiles/scripts/"/>
+      <Item Value="/home/torvik/fedora-dms-dotfiles/packages/"/>
+      <Item Value="/home/torvik/fedora-dms-dotfiles/home/.local/share/"/>
+      <Item Value="/home/torvik/fedora-dms-dotfiles/home/.local/share/fonts/"/>
+      <Item Value="/home/torvik/fedora-dms-dotfiles/home/.local/bin/"/>
+      <Item Value="/home/torvik/fedora-dms-dotfiles/.git/"/>
+      <Item Value="/home/torvik/.local/"/>
+      <Item Value="/home/torvik/.local/share/"/>
+      <Item Value="/home/torvik/dotfiles/"/>
+      <Item Value="/home/torvik/.local/share/fedora-dms-dotfiles/"/>
+      <Item Value="/home/torvik/.config/alacritty/"/>
+      <Item Value="/home/torvik/.config/Happ/"/>
+      <Item Value="/home/torvik/.local/share/Happ/"/>
+      <Item Value="/home/torvik/.local/share/Happ/update/"/>
+      <Item Value="/home/torvik/.local/share/Happ/routing/custom/"/>
+      <Item Value="/"/>
+      <Item Value="/usr/"/>
+      <Item Value="/usr/lib64/"/>
+    </Navigation>
+    <CommandLine/>
+    <FileMask>
+      <Item Value="*.*"/>
+    </FileMask>
+    <VolumeSize/>
+    <CreateDirectories>
+      <Item Value="scripts" Tag="0"/>
+      <Item Value="fedora-dms-dotfiles" Tag="0"/>
+    </CreateDirectories>
+    <SearchText/>
+    <SearchTextPath/>
+    <ReplaceText/>
+    <ReplaceTextPath/>
+    <RenameNameMask/>
+    <RenameExtMask/>
+    <SearchDirectories/>
+    <SearchExcludeFiles/>
+    <SearchExcludeDirectories/>
+  </History>
+</doublecmd>

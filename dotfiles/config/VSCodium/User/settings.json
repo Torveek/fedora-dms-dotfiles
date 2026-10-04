@@ -1,0 +1,10 @@
+{
+    "workbench.colorTheme": "Solarized Light",
+    "workbench.activityBar.location": "top",
+    "git.autofetch": true,
+    "terminal.integrated.commandsToSkipShell": [
+        "gigacode.new.agentManagerOpen",
+        "gigacode.new.agentManager.showTerminal"
+    ],
+    "http.systemCertificatesNode": true
+}

@@ -1,0 +1,27 @@
+# Safety backups and temporary files
+*.bak
+*.backup
+*.tmp
+*~
+*.swp
+.*.swp
+.dotfiles_backup/
+backup_*/
+
+# OS / Editor artifacts
+.DS_Store
+Thumbs.db
+.directory
+
+# Credentials and private keys (guardrail)
+*.key
+*.pem
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+*.token
+*.kdbx
+
+# Scratchpad
+scratch/

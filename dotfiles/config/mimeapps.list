@@ -1,0 +1,20 @@
+[Default Applications]
+application/x-zerosize=libreoffice-writer.desktop
+image/jpeg=org.gnome.Loupe.desktop
+x-scheme-handler/calendar=dms-open.desktop
+x-scheme-handler/clash=clash-verge.desktop
+x-scheme-handler/clash-verge=clash-verge.desktop
+x-scheme-handler/mailto=net.thunderbird.Thunderbird.desktop
+x-scheme-handler/throne=throne-url-handler.desktop
+
+[Added Associations]
+application/x-zerosize=libreoffice-writer.desktop;
+image/jpeg=org.mozilla.firefox.desktop;org.gnome.Loupe.desktop;
+image/png=org.mozilla.firefox.desktop;
+x-scheme-handler/calendar=dms-open.desktop;
+x-scheme-handler/clash=clash-verge.desktop;
+x-scheme-handler/clash-verge=clash-verge.desktop;
+x-scheme-handler/mailto=net.thunderbird.Thunderbird.desktop;
+application/json=codium.desktop;
+
+[Removed Associations]

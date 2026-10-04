@@ -1,0 +1,11 @@
+{
+  "pkgUpdate": {
+    "enabled": true
+  },
+  "dmsThemeSync": {
+    "enabled": true,
+    "folderColorBaseThemeDark": "",
+    "folderColorBaseThemeLight": "",
+    "folderColorBaseTheme": ""
+  }
+}

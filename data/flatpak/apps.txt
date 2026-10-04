@@ -1,0 +1,2 @@
+md.obsidian.Obsidian
+net.epson.epsonscan2

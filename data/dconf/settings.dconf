@@ -1,0 +1,79 @@
+[org/gnome/desktop/interface]
+accent-color='slate'
+color-scheme='prefer-dark'
+cursor-size=24
+document-font-name='MesloLGS Nerd Font 11'
+font-name='MesloLGS Nerd Font 11'
+gtk-theme='Adwaita'
+icon-theme='Adwaita'
+monospace-font-name='MesloLGS Nerd Font 12'
+
+[org/gnome/desktop/wm/preferences]
+titlebar-font='MesloLGS Nerd Font Bold 11'
+
+[org/gnome/login-screen]
+enable-fingerprint-authentication=true
+enable-smartcard-authentication=false
+enable-switchable-authentication=false
+
+[org/gtk/settings/file-chooser]
+date-format='regular'
+location-mode='path-bar'
+show-hidden=true
+show-size-column=true
+show-type-column=true
+sidebar-width=189
+sort-column='name'
+sort-directories-first=false
+sort-order='ascending'
+type-format='category'
+window-position=(20, 20)
+window-size=(762, 765)
+
+[org/virt-manager/virt-manager]
+manager-window-height=812
+manager-window-width=762
+
+[org/virt-manager/virt-manager/connections]
+autoconnect=['qemu:///system']
+uris=['qemu:///system']
+
+[org/virt-manager/virt-manager/details]
+show-toolbar=true
+
+[org/virt-manager/virt-manager/paths]
+media-default='/run/media/torvik/Ventoy/ISO'
+
+[org/virt-manager/virt-manager/urls]
+isos=['/var/lib/libvirt/images/Fedora-Server-dvd-x86_64-44-1.7.iso', '/run/media/torvik/Ventoy/ISO/Fedora-Server-dvd-x86_64-44-1.7.iso']
+
+[org/virt-manager/virt-manager/vmlist-fields]
+disk-usage=false
+network-traffic=false
+
+[org/virt-manager/virt-manager/vms/e3fdc128a7494c33b74b09316221b2b2]
+autoconnect=1
+resize-guest=0
+scaling=2
+vm-window-size=(762, 812)
+
+[system/proxy]
+autoconfig-url='http://127.0.0.1:33331/commands/pac'
+ignore-hosts=['localhost', '127.0.0.0/8', '::1']
+mode='none'
+
+[system/proxy/ftp]
+host='127.0.0.1'
+port=2080
+
+[system/proxy/http]
+host='127.0.0.1'
+port=2080
+
+[system/proxy/https]
+host='127.0.0.1'
+port=2080
+
+[system/proxy/socks]
+host='127.0.0.1'
+port=2080
