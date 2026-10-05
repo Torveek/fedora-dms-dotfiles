@@ -40,6 +40,7 @@
 fedora-dms-dotfiles/
 ├── backup.sh                       # Backup entrypoint (interactive or flag-driven)
 ├── restore.sh                      # Restore entrypoint (DMS-first, gum progress)
+├── install_dms.sh                  # Standalone installer for DMS Dank Linux & Niri
 ├── config.env                      # Tracked dotfiles, exclusion patterns, repo lists
 ├── lib/
 │   ├── ui.sh                       # gum UI wrappers, spinners, badges & ANSI fallback
@@ -82,8 +83,7 @@ fedora-dms-dotfiles/
     │   ├── qt5ct/ & qt6ct/         # Qt styling and Matugen color schemes
     │   ├── xsettingsd/             # XSettings daemon configuration
     │   ├── starship.toml           # Starship cross-shell prompt configuration
-    │   ├── mimeapps.list           # Default file association mappings
-    │   └── VSCodium/User/          # Clean settings.json & keybindings.json (no cache)
+    │   └── mimeapps.list           # Default file association mappings
     ├── home/                       # Mapped to ~/
     │   ├── .bashrc                 # Bash aliases, functions, environment variables
     │   ├── .bash_profile          # Login shell environment
@@ -116,7 +116,26 @@ cd ~/repos/fedora-dms-dotfiles
 
 ---
 
-### 2. Run the Restore Script
+### 2. Standalone DMS Installation (Optional)
+
+If you only want to install Dank Material Shell, Niri, and configure `dms-greeter` without restoring the rest of the dotfiles:
+
+```bash
+# Preview installation actions
+./install_dms.sh --dry-run
+
+# Run interactive installation
+./install_dms.sh
+
+# Run unattended installation
+./install_dms.sh -y
+```
+
+This runs the official DankLinux automatic installer (`curl -fsSL https://install.danklinux.com | sh`), configures `dms-greeter` for `greetd`, and enables systemd user services.
+
+---
+
+### 3. Run the Restore Script
 
 #### Preview First (Dry-Run):
 Preview all actions, package installations, and file paths without making any system changes:
@@ -167,7 +186,7 @@ By default, `restore.sh` passes `--skip-unavailable` to DNF (supported in DNF5 /
 
 ---
 
-### 3. Post-Restore Steps
+### 4. Post-Restore Steps
 
 1. **Log into Niri**: Log out of your current session or reboot, and choose **Niri** from your display manager (SDDM/GDM).
 2. **Verify DMS Service**: Ensure Dank Material Shell user service is active:
@@ -259,7 +278,6 @@ flowchart TD
 | | Cava Audio Visualizer | `~/.config/cava/` |
 | | Fastfetch | `~/.config/fastfetch/` |
 | **Editors & Dev** | Neovim (LazyVim setup) | `~/.config/nvim/` |
-| | VSCodium Settings & Keymaps | `~/.config/VSCodium/User/` |
 | | VSCodium Extensions | `data/extensions/vscodium.txt` |
 | | Lazygit & Git | `~/.config/lazygit/`, `~/.gitconfig` |
 | **File Management** | Double Commander | `~/.config/doublecmd/` |

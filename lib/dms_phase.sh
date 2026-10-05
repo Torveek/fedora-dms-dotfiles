@@ -232,6 +232,53 @@ restore_dms_manual() {
     fi
 }
 
+dms_install_greeter() {
+    if [ "${DMS_SETUP_GREETER:-true}" = "false" ]; then
+        ui_info "Skipping DMS Greeter setup as requested"
+        return 0
+    fi
+
+    ui_step "Phase 1.2: Configuring and Enabling DMS Greeter (greetd)"
+
+    if [ "${DRY_RUN:-false}" = "true" ]; then
+        ui_dryrun "Would execute: sudo dms-greeter install --yes"
+        ui_dryrun "Would execute: dms-greeter sync"
+        ui_dryrun "Would execute: sudo systemctl enable greetd.service"
+        return 0
+    fi
+
+    # Check if dms-greeter is installed
+    if ! command -v dms-greeter >/dev/null 2>&1; then
+        ui_info "dms-greeter command not found. Attempting to install dms-greeter via DNF..."
+        sudo dnf install -y dms-greeter || true
+    fi
+
+    if command -v dms-greeter >/dev/null 2>&1; then
+        ui_info "Configuring greetd with dms-greeter..."
+        if sudo dms-greeter install --yes; then
+            ui_success "Installed and configured dms-greeter in greetd"
+        else
+            ui_warn "dms-greeter install encountered issues, attempting dms-greeter enable..."
+            sudo dms-greeter enable --yes || true
+        fi
+
+        # Sync user theme/wallpaper to greeter
+        ui_info "Syncing user theme and wallpaper to greeter..."
+        dms-greeter sync || true
+
+        # Ensure greetd.service is enabled
+        if command -v systemctl >/dev/null 2>&1; then
+            if sudo systemctl enable greetd.service 2>/dev/null; then
+                ui_success "Enabled systemd service: greetd.service"
+            else
+                ui_warn "Failed to enable greetd.service"
+            fi
+        fi
+    else
+        ui_warn "dms-greeter binary is not available. Skipping greeter configuration."
+    fi
+}
+
 restore_dms_configs() {
     ui_step "Phase 1.3: Deploying DMS & Niri Configurations"
     local backup_timestamp
@@ -281,9 +328,9 @@ restore_dms_service() {
     fi
 }
 
-restore_dms_phase() {
+dms_install_standalone() {
     local method="${DMS_INSTALL_METHOD:-auto}"
-    ui_header "Phase 1: DankMaterialShell & Niri Priority Setup" "Compositor, shell, widgets & keybindings [Method: ${method}]"
+    ui_header "DMS Dank Linux Installation" "Installing compositor, shell, widgets & greeter [Method: ${method}]"
 
     if [ "$method" = "manual" ]; then
         restore_dms_manual
@@ -291,10 +338,33 @@ restore_dms_phase() {
         restore_dms_auto
     fi
 
-    # Step: Deploy DMS & Niri Configurations
-    restore_dms_configs
+    # Step: Configure & Enable DMS Greeter
+    dms_install_greeter
 
     # Step: Enable & Reload dms.service
+    restore_dms_service
+
+    ui_success "DMS Dank Linux Standalone Installation Completed!"
+}
+
+restore_dms_phase() {
+    local method="${DMS_INSTALL_METHOD:-auto}"
+    ui_header "Phase 1: DankMaterialShell & Niri Priority Setup" "Compositor, shell, widgets & keybindings [Method: ${method}]"
+
+    # Step 1.1: Install DMS (Official automatic or manual fallback)
+    if [ "$method" = "manual" ]; then
+        restore_dms_manual
+    else
+        restore_dms_auto
+    fi
+
+    # Step 1.2: Configure & Enable DMS Greeter
+    dms_install_greeter
+
+    # Step 1.3: Deploy DMS & Niri Configurations
+    restore_dms_configs
+
+    # Step 1.4: Enable & Reload dms.service
     restore_dms_service
 
     ui_success "DMS & Niri Priority Phase Complete!"

@@ -58,6 +58,7 @@ fpaste
 fprintd-pam
 fwupd
 gcc-c++
+gh
 gimp
 git
 gnome-keyring

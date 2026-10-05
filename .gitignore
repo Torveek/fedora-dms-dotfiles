@@ -25,3 +25,6 @@ id_ed25519.pub
 
 # Scratchpad
 scratch/
+
+# Untracked editors
+dotfiles/config/VSCodium/

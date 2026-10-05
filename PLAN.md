@@ -56,6 +56,7 @@ flowchart TD
 ├── config.env                      # Tracked dotfiles, exclusion patterns, repo lists
 ├── backup.sh                       # Backup entrypoint (supports --dry-run, --all, modular flags)
 ├── restore.sh                      # Restore entrypoint (DMS-first, gum progress, --dry-run)
+├── install_dms.sh                  # Standalone installer for DMS Dank Linux & Niri
 ├── lib/
 │   ├── ui.sh                       # gum wrapper (spinners, styles, headers, fallback text)
 │   ├── dms_phase.sh                # DMS & Niri priority setup (COPRs, core RPMs, configs, service)
@@ -98,8 +99,7 @@ flowchart TD
     │   ├── qt5ct/
     │   ├── qt6ct/
     │   ├── starship.toml
-    │   ├── xsettingsd/
-    │   └── VSCodium/User/          # Clean settings.json, keybindings.json (no cache/bloat)
+    │   └── xsettingsd/
     ├── home/                       # Mapped to ~/
     │   ├── .bashrc
     │   ├── .bash_profile

@@ -55,12 +55,12 @@ network-traffic=false
 autoconnect=1
 resize-guest=0
 scaling=2
-vm-window-size=(762, 812)
+vm-window-size=(1528, 812)
 
 [system/proxy]
 autoconfig-url='http://127.0.0.1:33331/commands/pac'
 ignore-hosts=['localhost', '127.0.0.0/8', '::1']
-mode='none'
+mode='manual'
 
 [system/proxy/ftp]
 host='127.0.0.1'

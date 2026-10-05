@@ -119,6 +119,10 @@ while [[ $# -gt 0 ]]; do
             FORCE_DMS_INSTALL=true
             shift
             ;;
+        --no-greeter)
+            DMS_SETUP_GREETER=false
+            shift
+            ;;
         --skip-unavailable)
             SKIP_UNAVAILABLE=true
             shift
@@ -170,7 +174,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-export DRY_RUN ASSUME_YES SKIP_UNAVAILABLE DMS_INSTALL_METHOD FORCE_DMS_INSTALL
+export DRY_RUN ASSUME_YES SKIP_UNAVAILABLE DMS_INSTALL_METHOD FORCE_DMS_INSTALL DMS_SETUP_GREETER
 
 # If no specific module flag was passed, handle default or interactive choice
 if [ "$ANY_MODULE_SPECIFIED" = "false" ] && [ "$DO_ALL" = "false" ]; then

@@ -48,28 +48,7 @@ backup_dotfiles() {
         fi
     done
 
-    # 3. VSCodium user settings (clean backup without caches or storage)
-    local vsc_src="${HOME}/.config/${VSCODIUM_CONFIG_DIR}"
-    local vsc_dest="${DOTFILES_DIR}/config/${VSCODIUM_CONFIG_DIR}"
-    if [ -d "$vsc_src" ]; then
-        if [ "${DRY_RUN:-false}" = "true" ]; then
-            ui_dryrun "Would copy VSCodium user configs to ${vsc_dest}"
-        else
-            mkdir -p "$vsc_dest"
-            for uf in "${VSCODIUM_USER_FILES[@]}"; do
-                if [ -f "${vsc_src}/${uf}" ]; then
-                    cp "${vsc_src}/${uf}" "${vsc_dest}/${uf}"
-                    ui_success "Backed up VSCodium ${uf}"
-                fi
-            done
-            if [ -d "${vsc_src}/snippets" ]; then
-                rsync -a --delete "${vsc_src}/snippets/" "${vsc_dest}/snippets/"
-                ui_success "Backed up VSCodium snippets"
-            fi
-        fi
-    fi
-
-    # 4. Tracked home dotfiles (~/.*)
+    # 3. Tracked home dotfiles (~/.*)
     for file in "${TRACKED_HOME_FILES[@]}"; do
         local src="${HOME}/${file}"
         local dest="${DOTFILES_DIR}/home/${file}"
@@ -84,7 +63,7 @@ backup_dotfiles() {
         fi
     done
 
-    # 5. Fonts in ~/.local/share/fonts
+    # 4. Fonts in ~/.local/share/fonts
     local fonts_src="${HOME}/.local/share/${TRACKED_FONTS_DIR}"
     local fonts_dest="${DOTFILES_DIR}/local_share/${TRACKED_FONTS_DIR}"
     if [ -d "$fonts_src" ]; then
@@ -131,6 +110,9 @@ restore_dotfiles() {
             [ ! -e "$item" ] && continue
             local name
             name=$(basename "$item")
+
+            # Do not restore VSCodium settings
+            [ "$name" = "VSCodium" ] && continue
 
             # Skip DMS priority dirs if they were already handled in Phase 1
             if [ "${SKIP_DMS_IN_DOTFILES:-false}" = "true" ]; then
