@@ -47,17 +47,19 @@ Restores Dank Material Shell, Niri, DNF packages, COPR repos, Flatpaks,
 dconf desktop settings, systemd user services, and dotfiles.
 
 Options:
-  -h, --help        Show this help message and exit
-  -n, --dry-run     Simulate restore actions without modifying any files or packages
-  -y, --yes         Automatic yes to prompts; run non-interactively
-  --all             Full restoration (DMS first, then repos, pkgs, flatpaks, dotfiles, dconf, services)
-  --dms-only        Restore ONLY Dank Material Shell & Niri priority setup
-  --repos           Restore secondary COPRs and RPM repos
-  --packages        Restore DNF user-installed packages and VSCodium extensions
-  --flatpaks        Restore Flatpak remotes and applications
-  --dotfiles        Restore dotfiles and fonts (with timestamped safety backups)
-  --dconf           Restore dconf desktop settings (themes, fonts, dark mode)
-  --services        Restore systemd user services
+  -h, --help            Show this help message and exit
+  -n, --dry-run         Simulate restore actions without modifying any files or packages
+  -y, --yes             Automatic yes to prompts; run non-interactively
+  --all                 Full restoration (DMS first, then repos, pkgs, flatpaks, dotfiles, dconf, services)
+  --skip-unavailable    Skip unavailable packages during DNF install (default: enabled)
+  --no-skip-unavailable Do not skip unavailable packages (fail if any package is missing)
+  --dms-only            Restore ONLY Dank Material Shell & Niri priority setup
+  --repos               Restore secondary COPRs and RPM repos
+  --packages            Restore DNF user-installed packages and VSCodium extensions
+  --flatpaks            Restore Flatpak remotes and applications
+  --dotfiles            Restore dotfiles and fonts (with timestamped safety backups)
+  --dconf               Restore dconf desktop settings (themes, fonts, dark mode)
+  --services            Restore systemd user services
 
 Examples:
   ./restore.sh --dry-run        # Preview full restore process safely
@@ -77,6 +79,7 @@ DO_DCONF=false
 DO_SERVICES=false
 DRY_RUN=false
 ASSUME_YES=false
+SKIP_UNAVAILABLE=true
 
 ANY_MODULE_SPECIFIED=false
 
@@ -96,6 +99,14 @@ while [[ $# -gt 0 ]]; do
             ;;
         --all)
             DO_ALL=true
+            shift
+            ;;
+        --skip-unavailable)
+            SKIP_UNAVAILABLE=true
+            shift
+            ;;
+        --no-skip-unavailable)
+            SKIP_UNAVAILABLE=false
             shift
             ;;
         --dms-only)
@@ -141,7 +152,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-export DRY_RUN ASSUME_YES
+export DRY_RUN ASSUME_YES SKIP_UNAVAILABLE
 
 # If no specific module flag was passed, handle default or interactive choice
 if [ "$ANY_MODULE_SPECIFIED" = "false" ] && [ "$DO_ALL" = "false" ]; then
@@ -242,7 +253,30 @@ fi
 END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))
 
-ui_header "Restore Completed in ${DURATION}s" "All selected components have been successfully restored!"
+# Collect all uninstalled packages from DMS core and user packages
+ALL_NOT_INSTALLED=()
+if [ -n "${NOT_INSTALLED_DMS_PACKAGES[*]:-}" ]; then
+    ALL_NOT_INSTALLED+=("${NOT_INSTALLED_DMS_PACKAGES[@]}")
+fi
+if [ -n "${NOT_INSTALLED_PACKAGES[*]:-}" ]; then
+    ALL_NOT_INSTALLED+=("${NOT_INSTALLED_PACKAGES[@]}")
+fi
+
+if [ "$DRY_RUN" = "true" ]; then
+    ui_header "Dry-Run Completed in ${DURATION}s" "Restore simulation finished without modifying any files or packages"
+elif [ "${#ALL_NOT_INSTALLED[@]}" -gt 0 ]; then
+    ui_header "Restore Completed with Warnings in ${DURATION}s" "Restoration finished, but some packages were not installed"
+    
+    echo ""
+    ui_warn "The following ${#ALL_NOT_INSTALLED[@]} package(s) were NOT installed (unavailable in repos or failed):"
+    for pkg in "${ALL_NOT_INSTALLED[@]}"; do
+        ui_list_item "$pkg"
+    done
+    echo ""
+    ui_info "Note: These packages may require custom COPRs, direct RPM downloads, or third-party repositories (e.g. firefoxpwa)."
+else
+    ui_header "Restore Completed in ${DURATION}s" "All selected components have been successfully restored!"
+fi
 
 if [ "$DRY_RUN" = "false" ]; then
     ui_info "Safety backups (if any) are located in: ${RESTORE_BACKUP_BASE}/"

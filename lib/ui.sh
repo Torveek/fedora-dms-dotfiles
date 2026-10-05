@@ -107,6 +107,16 @@ ui_dryrun() {
     fi
 }
 
+ui_list_item() {
+    local item="$1"
+    local color="${2:-220}"
+    if has_gum; then
+        echo "  $(gum style --foreground "$color" "•") $item"
+    else
+        echo -e "  ${ANSI_YELLOW}•${ANSI_RESET} $item"
+    fi
+}
+
 ui_spin() {
     local title="$1"
     shift

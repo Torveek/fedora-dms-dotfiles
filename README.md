@@ -147,6 +147,13 @@ If you only need specific components restored:
 ./restore.sh --services       # Enable and reload systemd user services
 ```
 
+#### Resilient Package Installation & Unavailable Packages:
+By default, `restore.sh` passes `--skip-unavailable` to DNF (supported in DNF5 / Fedora 41+) so that packages unavailable in standard repositories (such as `firefoxpwa` or custom packages) do not halt the entire restoration. At the end of restoration, any uninstalled packages are clearly listed in a summary with recommendations for manual installation:
+```bash
+./restore.sh --all                     # Default: skips unavailable packages and lists them at the end
+./restore.sh --all --no-skip-unavailable  # Fail immediately if any package is missing from repositories
+```
+
 ---
 
 ### 3. Post-Restore Steps

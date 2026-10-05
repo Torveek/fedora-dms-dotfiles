@@ -59,9 +59,18 @@ restore_packages() {
         return 0
     fi
 
+    # Determine DNF options (e.g., --skip-unavailable for DNF5)
+    local dnf_opts=("-y")
+    if [ "${SKIP_UNAVAILABLE:-true}" = "true" ]; then
+        if dnf install --help 2>&1 | grep -q -- '--skip-unavailable'; then
+            dnf_opts+=("--skip-unavailable")
+        fi
+    fi
+
     # Build cache of currently installed packages
     ui_info "Checking installed packages against ${dnf_pkg_file}..."
-    declare -A installed_pkgs
+    unset installed_pkgs
+    declare -A installed_pkgs=()
     while IFS= read -r p; do
         [ -n "$p" ] && installed_pkgs["$p"]=1
     done < <(rpm -qa --qf '%{name}\n' 2>/dev/null)
@@ -75,32 +84,58 @@ restore_packages() {
     done < <(grep -v '^[[:space:]]*#' "$dnf_pkg_file")
 
     local missing_count=${#missing_pkgs[@]}
+    NOT_INSTALLED_PACKAGES=()
+
     if [ "$missing_count" -eq 0 ]; then
         ui_success "All user RPM packages are already installed!"
     else
         ui_info "Found ${missing_count} missing packages to install."
 
         if [ "${DRY_RUN:-false}" = "true" ]; then
-            ui_dryrun "Would install ${missing_count} packages: ${missing_pkgs[*]}"
+            ui_dryrun "Would install ${missing_count} packages: sudo dnf install ${dnf_opts[*]} ${missing_pkgs[*]}"
         else
             ui_info "Attempting batch installation of ${missing_count} packages..."
-            if sudo dnf install -y "${missing_pkgs[@]}"; then
-                ui_success "Successfully batch-installed ${missing_count} packages!"
+            if sudo dnf install "${dnf_opts[@]}" "${missing_pkgs[@]}"; then
+                ui_info "Batch installation step completed."
             else
                 ui_warn "Batch install encountered issues. Switching to resilient individual package installation..."
-                local failed_pkgs=()
                 local installed_count=0
                 for pkg in "${missing_pkgs[@]}"; do
-                    if sudo dnf install -y "$pkg" >/dev/null 2>&1; then
+                    if sudo dnf install "${dnf_opts[@]}" "$pkg" >/dev/null 2>&1; then
                         installed_count=$((installed_count + 1))
-                    else
-                        failed_pkgs+=("$pkg")
                     fi
                 done
-                ui_success "Installed ${installed_count} packages."
-                if [ ${#failed_pkgs[@]} -gt 0 ]; then
-                    ui_warn "The following ${#failed_pkgs[@]} packages could not be installed: ${failed_pkgs[*]}"
+                ui_info "Resilient installation step completed."
+            fi
+
+            # Check which packages are still not installed
+            unset current_installed
+            declare -A current_installed=()
+            while IFS= read -r p; do
+                [ -n "$p" ] && current_installed["$p"]=1
+            done < <(rpm -qa --qf '%{name}\n' 2>/dev/null)
+
+            local not_installed=()
+            for pkg in "${missing_pkgs[@]}"; do
+                if [ -z "${current_installed[$pkg]:-}" ]; then
+                    not_installed+=("$pkg")
                 fi
+            done
+
+            NOT_INSTALLED_PACKAGES=("${not_installed[@]}")
+            local not_installed_count=${#not_installed[@]}
+            local successfully_installed=$((missing_count - not_installed_count))
+
+            if [ "$not_installed_count" -eq 0 ]; then
+                ui_success "Successfully installed all ${missing_count} packages!"
+            else
+                if [ "$successfully_installed" -gt 0 ]; then
+                    ui_success "Successfully installed ${successfully_installed} of ${missing_count} packages."
+                fi
+                ui_warn "${not_installed_count} package(s) could not be installed (unavailable in repos or failed):"
+                for pkg in "${not_installed[@]}"; do
+                    ui_list_item "$pkg"
+                done
             fi
         fi
     fi

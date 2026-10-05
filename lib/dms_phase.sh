@@ -101,13 +101,36 @@ restore_dms_phase() {
         fi
     done
 
+    NOT_INSTALLED_DMS_PACKAGES=()
     if [ ${#missing_pkgs[@]} -gt 0 ]; then
+        local dnf_opts=("-y")
+        if [ "${SKIP_UNAVAILABLE:-true}" = "true" ]; then
+            if dnf install --help 2>&1 | grep -q -- '--skip-unavailable'; then
+                dnf_opts+=("--skip-unavailable")
+            fi
+        fi
+
         if [ "${DRY_RUN:-false}" = "true" ]; then
-            ui_dryrun "Would install packages: sudo dnf install -y ${missing_pkgs[*]}"
+            ui_dryrun "Would install packages: sudo dnf install ${dnf_opts[*]} ${missing_pkgs[*]}"
         else
             ui_info "Installing missing DMS packages: ${missing_pkgs[*]}"
-            ui_spin "Installing DMS core packages" sudo dnf install -y "${missing_pkgs[@]}"
-            ui_success "Installed DMS core packages"
+            ui_spin "Installing DMS core packages" sudo dnf install "${dnf_opts[@]}" "${missing_pkgs[@]}"
+            
+            local dms_failed=()
+            for pkg in "${missing_pkgs[@]}"; do
+                if ! rpm -q "$pkg" >/dev/null 2>&1; then
+                    dms_failed+=("$pkg")
+                fi
+            done
+            if [ ${#dms_failed[@]} -gt 0 ]; then
+                ui_warn "The following DMS core package(s) could not be installed:"
+                for pkg in "${dms_failed[@]}"; do
+                    ui_list_item "$pkg"
+                done
+                NOT_INSTALLED_DMS_PACKAGES=("${dms_failed[@]}")
+            else
+                ui_success "Installed DMS core packages"
+            fi
         fi
     else
         ui_success "All DMS core packages are already installed"
