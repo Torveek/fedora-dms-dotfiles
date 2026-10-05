@@ -51,14 +51,109 @@ backup_dms_phase() {
     done
 }
 
-restore_dms_phase() {
-    ui_header "Phase 1: DankMaterialShell & Niri Priority Setup" "Compositor, shell, widgets & keybindings"
+restore_dms_auto() {
+    ui_step "Phase 1.1: Official DankLinux Automatic Installation"
 
+    local installer_url="${DMS_INSTALLER_URL:-https://install.danklinux.com}"
+    local installer_args=()
+
+    if [ -n "${DMS_INSTALLER_COMPOSITOR:-}" ]; then
+        installer_args+=("--compositor" "$DMS_INSTALLER_COMPOSITOR")
+    fi
+    if [ -n "${DMS_INSTALLER_TERM:-}" ]; then
+        installer_args+=("--term" "$DMS_INSTALLER_TERM")
+    fi
+    if [ "${DMS_INSTALLER_ALL_FEATURES:-true}" = "true" ]; then
+        installer_args+=("--all-features")
+    fi
+    if [ "${ASSUME_YES:-false}" = "true" ]; then
+        installer_args+=("-y")
+    fi
+    if [ -n "${DMS_INSTALLER_EXTRA_FLAGS[*]:-}" ]; then
+        installer_args+=("${DMS_INSTALLER_EXTRA_FLAGS[@]}")
+    fi
+
+    local cmd_str="curl -fsSL ${installer_url} | sh"
+    if [ ${#installer_args[@]} -gt 0 ]; then
+        cmd_str+=" -s -- ${installer_args[*]}"
+    fi
+
+    local all_installed=true
+    for pkg in "${DMS_PRIORITY_PACKAGES[@]}"; do
+        if ! rpm -q "$pkg" >/dev/null 2>&1; then
+            all_installed=false
+            break
+        fi
+    done
+
+    if [ "$all_installed" = "true" ] && [ "${FORCE_DMS_INSTALL:-false}" != "true" ]; then
+        ui_info "All DMS core packages are already installed (${DMS_PRIORITY_PACKAGES[*]})"
+        if [ "${DRY_RUN:-false}" = "true" ]; then
+            ui_dryrun "Official installer command: ${cmd_str}"
+        fi
+        NOT_INSTALLED_DMS_PACKAGES=()
+        return 0
+    fi
+
+    if [ "${DRY_RUN:-false}" = "true" ]; then
+        ui_dryrun "Would refresh sudo credentials: sudo -v"
+        ui_dryrun "Would execute official DMS installer: ${cmd_str}"
+        NOT_INSTALLED_DMS_PACKAGES=()
+        return 0
+    fi
+
+    # Ensure curl is available
+    if ! command -v curl >/dev/null 2>&1; then
+        ui_info "curl is not installed. Installing curl via DNF..."
+        sudo dnf install -y curl || true
+    fi
+
+    # Pre-cache sudo credentials for headless execution
+    if command -v sudo >/dev/null 2>&1; then
+        ui_info "Requesting sudo privileges for DankLinux installer..."
+        sudo -v || true
+    fi
+
+    ui_info "Running official DankLinux installer: ${cmd_str}"
+    local installer_status=0
+    if [ ${#installer_args[@]} -gt 0 ]; then
+        curl -fsSL "$installer_url" | sh -s -- "${installer_args[@]}" || installer_status=$?
+    else
+        curl -fsSL "$installer_url" | sh || installer_status=$?
+    fi
+
+    if [ "$installer_status" -eq 0 ]; then
+        ui_success "Official DankLinux installer completed successfully!"
+
+        # Verify packages
+        local missing=()
+        for pkg in "${DMS_PRIORITY_PACKAGES[@]}"; do
+            if ! rpm -q "$pkg" >/dev/null 2>&1; then
+                missing+=("$pkg")
+            fi
+        done
+        if [ ${#missing[@]} -gt 0 ]; then
+            ui_warn "Some DMS priority packages were not installed by the official installer:"
+            for pkg in "${missing[@]}"; do
+                ui_list_item "$pkg"
+            done
+            NOT_INSTALLED_DMS_PACKAGES=("${missing[@]}")
+        else
+            NOT_INSTALLED_DMS_PACKAGES=()
+        fi
+    else
+        ui_warn "Official DankLinux installer exited with status ${installer_status}."
+        ui_info "Falling back to manual COPR & package installation..."
+        restore_dms_manual
+    fi
+}
+
+restore_dms_manual() {
     local dms_copr_file="${DATA_DIR}/repos/dms-copr.list"
     local dms_pkg_file="${DATA_DIR}/packages/dms-packages.txt"
 
     # Step 1: Enable Priority COPRs
-    ui_step "Phase 1.1: Enabling Priority COPR Repositories"
+    ui_step "Phase 1.1: Enabling Priority COPR Repositories (Manual Mode)"
     local coprs_to_enable=()
     if [ -f "$dms_copr_file" ]; then
         mapfile -t coprs_to_enable < <(grep -v '^[[:space:]]*#' "$dms_copr_file" | grep -v '^[[:space:]]*$')
@@ -84,7 +179,7 @@ restore_dms_phase() {
     done
 
     # Step 2: Install Priority DMS Packages
-    ui_step "Phase 1.2: Installing DMS Core Packages"
+    ui_step "Phase 1.2: Installing DMS Core Packages (Manual Mode)"
     local pkgs_to_install=()
     if [ -f "$dms_pkg_file" ]; then
         mapfile -t pkgs_to_install < <(grep -v '^[[:space:]]*#' "$dms_pkg_file" | grep -v '^[[:space:]]*$')
@@ -135,8 +230,9 @@ restore_dms_phase() {
     else
         ui_success "All DMS core packages are already installed"
     fi
+}
 
-    # Step 3: Deploy DMS & Niri Dotfiles (with safety backups)
+restore_dms_configs() {
     ui_step "Phase 1.3: Deploying DMS & Niri Configurations"
     local backup_timestamp
     backup_timestamp=$(date +%Y%m%d_%H%M%S)
@@ -166,8 +262,9 @@ restore_dms_phase() {
             ui_warn "Source dotfile directory ${src} not found in repo"
         fi
     done
+}
 
-    # Step 4: Enable & Reload dms.service
+restore_dms_service() {
     ui_step "Phase 1.4: Enabling dms.service"
     if [ "${DRY_RUN:-false}" = "true" ]; then
         ui_dryrun "Would run: systemctl --user daemon-reload"
@@ -182,6 +279,23 @@ restore_dms_phase() {
             fi
         fi
     fi
+}
+
+restore_dms_phase() {
+    local method="${DMS_INSTALL_METHOD:-auto}"
+    ui_header "Phase 1: DankMaterialShell & Niri Priority Setup" "Compositor, shell, widgets & keybindings [Method: ${method}]"
+
+    if [ "$method" = "manual" ]; then
+        restore_dms_manual
+    else
+        restore_dms_auto
+    fi
+
+    # Step: Deploy DMS & Niri Configurations
+    restore_dms_configs
+
+    # Step: Enable & Reload dms.service
+    restore_dms_service
 
     ui_success "DMS & Niri Priority Phase Complete!"
 }

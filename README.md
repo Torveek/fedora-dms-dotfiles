@@ -24,7 +24,7 @@
 
 ## <a id="key-features"></a>🌟 Key Features
 
-- **🚀 Dank Material Shell Priority Phase**: On restoration, the core desktop environment (DMS, Niri compositor, Quickshell, Matugen dynamic theming, dgop, and associated COPRs) is prioritized and installed first before secondary packages.
+- **🚀 Dank Material Shell Priority Phase**: On restoration, the core desktop environment (DMS, Niri compositor, Quickshell, Matugen dynamic theming, dgop, and associated COPRs) is prioritized and installed first using the official automatic DankLinux installer (`curl -fsSL https://install.danklinux.com | sh`), with automatic fallback to manual COPR/RPM package installation if offline or needed.
 - **✨ Modern Interactive CLI with `gum`**: Styled banners, progress spinners, interactive multi-select menus, and confirmations powered by [Charm's `gum`](https://github.com/charmbracelet/gum), with automatic DNF bootstrapping on fresh installs and graceful ANSI fallback.
 - **🛡️ Zero-Data-Loss Safety Backups**: Restoring configurations never overwrites files blindly; timestamped safety backups are automatically generated in `~/.dotfiles_backup/<timestamp>/`.
 - **🧪 Full Dry-Run Simulation (`--dry-run` / `-n`)**: Fully simulate and preview all operations, commands, package queries, and target file paths across both backup and restore without altering your system state.
@@ -147,6 +147,17 @@ If you only need specific components restored:
 ./restore.sh --services       # Enable and reload systemd user services
 ```
 
+#### Dank Material Shell Installation Methods:
+Phase 1 defaults to the official automatic DankLinux installer (`curl -fsSL https://install.danklinux.com | sh`) preconfigured for Niri compositor and Alacritty terminal (`--compositor niri --term alacritty --all-features`). You can customize or switch installation methods at any time:
+```bash
+./restore.sh --all                        # Default: uses official DankLinux automatic installer
+./restore.sh --all --dms-auto             # Explicitly specify official automatic installer
+./restore.sh --all --dms-manual           # Use direct COPR enablement & DNF package lists
+./restore.sh --dms-only --force-dms       # Force re-running the official installer even if packages exist
+```
+> [!TIP]
+> You can configure the installer URL, target compositor, terminal, and extra flags directly in `config.env` (`DMS_INSTALL_METHOD`, `DMS_INSTALLER_COMPOSITOR`, `DMS_INSTALLER_TERM`, `DMS_INSTALLER_ALL_FEATURES`). If the official online installer is unreachable, `restore.sh` automatically offers to fall back to the offline repository lists.
+
 #### Resilient Package Installation & Unavailable Packages:
 By default, `restore.sh` passes `--skip-unavailable` to DNF (supported in DNF5 / Fedora 41+) so that packages unavailable in standard repositories (such as `firefoxpwa` or custom packages) do not halt the entire restoration. At the end of restoration, any uninstalled packages are clearly listed in a summary with recommendations for manual installation:
 ```bash
@@ -223,7 +234,7 @@ Restoration executes in a structured, fault-tolerant sequence:
 
 ```mermaid
 flowchart TD
-    Start(["./restore.sh"]) --> P1["Phase 1: DMS Priority Setup\n• Enable DMS & Niri COPRs\n• Install dms, niri, quickshell, matugen, dgop\n• Deploy ~/.config/DankMaterialShell & niri\n• Enable dms.service"]
+    Start(["./restore.sh"]) --> P1["Phase 1: DMS Priority Setup\n• Official DankLinux installer (curl ... | sh)\n• Automatic fallback to manual COPR & core RPMs\n• Deploy ~/.config/DankMaterialShell & niri\n• Enable dms.service"]
     P1 --> P2["Phase 2: Secondary Repositories\n• RPM Fusion (free/non-free)\n• Custom COPRs (imput/helium, etc.)"]
     P2 --> P3["Phase 3: DNF Packages & Extensions\n• Batch DNF install (fallback to individual)\n• VSCodium extensions install"]
     P3 --> P4["Phase 4: Flatpaks\n• Add Flathub remote\n• Install Flatpak applications"]

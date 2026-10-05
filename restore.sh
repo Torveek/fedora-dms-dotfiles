@@ -51,6 +51,9 @@ Options:
   -n, --dry-run         Simulate restore actions without modifying any files or packages
   -y, --yes             Automatic yes to prompts; run non-interactively
   --all                 Full restoration (DMS first, then repos, pkgs, flatpaks, dotfiles, dconf, services)
+  --dms-auto            Use official DankLinux automatic installer for DMS (curl -fsSL https://install.danklinux.com | sh) [default]
+  --dms-manual          Use manual COPR repositories and DNF package installation for DMS
+  --force-dms           Force running DMS installer even if core packages are already installed
   --skip-unavailable    Skip unavailable packages during DNF install (default: enabled)
   --no-skip-unavailable Do not skip unavailable packages (fail if any package is missing)
   --dms-only            Restore ONLY Dank Material Shell & Niri priority setup
@@ -63,8 +66,9 @@ Options:
 
 Examples:
   ./restore.sh --dry-run        # Preview full restore process safely
-  ./restore.sh --all            # Complete system restoration
-  ./restore.sh --dms-only       # Quickly set up just DMS and Niri
+  ./restore.sh --all            # Complete system restoration (official DMS installer first)
+  ./restore.sh --dms-only       # Quickly set up just DMS and Niri via official installer
+  ./restore.sh --dms-manual     # Restore using manual COPRs and DNF packages
 EOF
 }
 
@@ -80,6 +84,8 @@ DO_SERVICES=false
 DRY_RUN=false
 ASSUME_YES=false
 SKIP_UNAVAILABLE=true
+FORCE_DMS_INSTALL=false
+DMS_INSTALL_METHOD="${DMS_INSTALL_METHOD:-auto}"
 
 ANY_MODULE_SPECIFIED=false
 
@@ -99,6 +105,18 @@ while [[ $# -gt 0 ]]; do
             ;;
         --all)
             DO_ALL=true
+            shift
+            ;;
+        --dms-auto)
+            DMS_INSTALL_METHOD="auto"
+            shift
+            ;;
+        --dms-manual)
+            DMS_INSTALL_METHOD="manual"
+            shift
+            ;;
+        --force-dms)
+            FORCE_DMS_INSTALL=true
             shift
             ;;
         --skip-unavailable)
@@ -152,7 +170,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-export DRY_RUN ASSUME_YES SKIP_UNAVAILABLE
+export DRY_RUN ASSUME_YES SKIP_UNAVAILABLE DMS_INSTALL_METHOD FORCE_DMS_INSTALL
 
 # If no specific module flag was passed, handle default or interactive choice
 if [ "$ANY_MODULE_SPECIFIED" = "false" ] && [ "$DO_ALL" = "false" ]; then

@@ -14,7 +14,7 @@ Build a robust, modular, and elegant backup and restore system in `~/repos/fedor
 
 > [!IMPORTANT]
 > **Priority DMS Phase**:
-> During restore, Phase 1 immediately enables COPR repositories (`avengemedia/dms`, `avengemedia/danklinux`, `yalter/niri`), installs the DMS suite (`dms`, `dms-cli`, `dms-greeter`, `quickshell`, `matugen`, `dgop`, `niri`, `xwayland-satellite`), restores `~/.config/DankMaterialShell` & `~/.config/niri`, and enables `dms.service`. This ensures your compositor and shell are ready before any secondary software is installed.
+> During restore, Phase 1 prioritizes DankMaterialShell and Niri using the official automatic DankLinux installer (`curl -fsSL https://install.danklinux.com | sh`), configuring Niri compositor, Alacritty terminal, and all DMS features. It includes seamless automatic fallback to manual COPRs (`avengemedia/dms`, `avengemedia/danklinux`, `yalter/niri`) and DNF packages (`dms`, `dms-cli`, `dms-greeter`, `quickshell`, `matugen`, `dgop`, `niri`, `xwayland-satellite`) if offline. It then restores `~/.config/DankMaterialShell` & `~/.config/niri` with safety backups, and enables `dms.service`.
 
 > [!NOTE]
 > **Bootstrapping `gum`**:
@@ -32,7 +32,7 @@ Build a robust, modular, and elegant backup and restore system in `~/repos/fedor
 flowchart TD
     subgraph RestoreFlow ["restore.sh Execution Flow"]
         BOOT["0. Bootstrap: Check/install 'gum' & parse args (--dry-run, --all, etc.)"]
-        DMS_PHASE["1. DMS & Niri Priority Phase:\n- Enable avengemedia & yalter COPRs\n- Install dms, quickshell, matugen, dgop, niri\n- Restore ~/.config/DankMaterialShell & ~/.config/niri\n- Enable systemctl --user dms.service"]
+        DMS_PHASE["1. DMS & Niri Priority Phase:\n- Official DankLinux installer (curl ... | sh)\n- Fallback: avengemedia & yalter COPRs + RPMs\n- Restore ~/.config/DankMaterialShell & ~/.config/niri\n- Enable systemctl --user dms.service"]
         REPO_PHASE["2. Enable Secondary Repos:\n- RPM Fusion (Free/Non-free)\n- Third-party repos (VSCodium, etc.)\n- Other COPRs (dejan/lazygit, imput/helium)"]
         PKG_PHASE["3. Install User DNF Packages:\n- Batch install dnf-packages.txt with gum spin"]
         FP_PHASE["4. Flatpaks:\n- Add remotes (Flathub, Fedora)\n- Install Flatpak apps"]
@@ -125,11 +125,11 @@ flowchart TD
 
 ### 2. `lib/dms_phase.sh` (Priority DMS Installation)
 - Executes first during `restore.sh`:
-  1. Enables `avengemedia/dms`, `avengemedia/danklinux`, and `yalter/niri` via `dnf copr enable -y`.
-  2. Installs core packages: `dms`, `dms-cli`, `dms-greeter`, `quickshell`, `matugen`, `dgop`, `niri`, `xwayland-satellite`.
-  3. Deploys `~/.config/DankMaterialShell` and `~/.config/niri` configs.
-  4. Enables user service: `systemctl --user enable dms.service`.
-  5. In `--dry-run`, prints the exact COPR commands, packages to install, configs to copy, and service enable commands without running them.
+  1. Automatic mode (default): Executes official DankLinux installer (`curl -fsSL https://install.danklinux.com | sh`) configured for Niri compositor (`-c niri`), Alacritty terminal (`-t alacritty`), and all features (`--all-features`).
+  2. Fallback / Manual mode: Enables priority COPRs (`avengemedia/dms`, `avengemedia/danklinux`, `yalter/niri`) and installs core packages (`dms`, `dms-cli`, `dms-greeter`, `quickshell`, `matugen`, `dgop`, `niri`, `xwayland-satellite`) via resilient DNF.
+  3. Deploys `~/.config/DankMaterialShell` and `~/.config/niri` configs with timestamped safety backups.
+  4. Enables user service: `systemctl --user daemon-reload && systemctl --user enable dms.service`.
+  5. In `--dry-run`, simulates installer commands and configs deployment without modifying system state.
 
 ### 3. Dry-Run Mode (`--dry-run` / `-n`)
 - Implemented across both `backup.sh` and `restore.sh`.
