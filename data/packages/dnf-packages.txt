@@ -208,5 +208,6 @@ words
 wpa_supplicant
 xdg-desktop-portal-gtk
 zip
+zoxide
 zram-generator-defaults
 zsh

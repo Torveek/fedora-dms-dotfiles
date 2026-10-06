@@ -199,8 +199,12 @@ restore_dotfiles() {
 }
 
 bootstrap_zsh_environment() {
+    ui_step "Configuring Shell Environment (Oh My Zsh, Starship, Zoxide)"
+
+    # Ensure user bin directory is in PATH for current execution
+    export PATH="${HOME}/.local/bin:/usr/local/bin:${PATH}"
+
     if [ "${ZSH_BOOTSTRAP_OHMYZSH:-false}" = "true" ]; then
-        ui_step "Checking Zsh & Oh My Zsh Environment"
         if [ ! -d "${HOME}/.oh-my-zsh" ]; then
             if [ "${DRY_RUN:-false}" = "true" ]; then
                 ui_dryrun "Would install Oh My Zsh into ${HOME}/.oh-my-zsh"
@@ -237,6 +241,60 @@ bootstrap_zsh_environment() {
                 ui_info "Custom Zsh plugin ${pname} is already present"
             fi
         done
+    fi
+
+    # Bootstrap zoxide (required by oh-my-zsh zoxide plugin and .zshrc)
+    if [ "${BOOTSTRAP_ZOXIDE:-true}" = "true" ]; then
+        if ! command -v zoxide >/dev/null 2>&1; then
+            if [ "${DRY_RUN:-false}" = "true" ]; then
+                ui_dryrun "Would install zoxide into ${HOME}/.local/bin"
+            else
+                ui_info "zoxide not detected. Installing zoxide..."
+                local zoxide_installed=false
+                if command -v curl >/dev/null 2>&1; then
+                    mkdir -p "${HOME}/.local/bin"
+                    if curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh -s -- --bin-dir "${HOME}/.local/bin" >/dev/null 2>&1; then
+                        zoxide_installed=true
+                    fi
+                fi
+                if [ "$zoxide_installed" = "true" ] || [ -x "${HOME}/.local/bin/zoxide" ]; then
+                    ui_success "zoxide installed successfully"
+                else
+                    ui_warn "Could not install zoxide automatically. Please install it manually: sudo dnf install zoxide"
+                fi
+            fi
+        else
+            ui_info "zoxide is already installed ($(command -v zoxide))"
+        fi
+    fi
+
+    # Bootstrap Starship prompt (required for decorated shell prompt)
+    if [ "${BOOTSTRAP_STARSHIP:-true}" = "true" ]; then
+        if ! command -v starship >/dev/null 2>&1; then
+            if [ "${DRY_RUN:-false}" = "true" ]; then
+                ui_dryrun "Would install Starship prompt binary via official installer"
+            else
+                ui_info "Starship not detected. Installing Starship prompt..."
+                local starship_installed=false
+                if command -v curl >/dev/null 2>&1; then
+                    local target_bin_dir="${HOME}/.local/bin"
+                    if [ -w "/usr/local/bin" ]; then
+                        target_bin_dir="/usr/local/bin"
+                    fi
+                    mkdir -p "$target_bin_dir"
+                    if curl -sS https://starship.rs/install.sh | sh -s -- --yes --bin-dir "$target_bin_dir" >/dev/null 2>&1; then
+                        starship_installed=true
+                    fi
+                fi
+                if [ "$starship_installed" = "true" ] || command -v starship >/dev/null 2>&1 || [ -x "${HOME}/.local/bin/starship" ]; then
+                    ui_success "Starship prompt installed successfully"
+                else
+                    ui_warn "Could not install Starship automatically. Please install it manually: curl -sS https://starship.rs/install.sh | sh"
+                fi
+            fi
+        else
+            ui_info "Starship prompt is already installed ($(command -v starship))"
+        fi
     fi
 
     # Check default login shell via /etc/passwd

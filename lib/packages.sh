@@ -31,6 +31,14 @@ backup_packages() {
             fi
         done <<< "$all_user_pkgs"
 
+        # Ensure essential dotfile packages (e.g. zoxide, zsh) are always included
+        if [ -n "${ESSENTIAL_DNF_PACKAGES[*]:-}" ]; then
+            for epkg in "${ESSENTIAL_DNF_PACKAGES[@]}"; do
+                echo "$epkg" >> "$dnf_pkg_file"
+            done
+        fi
+        sort -u -o "$dnf_pkg_file" "$dnf_pkg_file"
+
         local count
         count=$(wc -l < "$dnf_pkg_file")
         ui_success "Exported ${count} user-installed RPM packages to ${dnf_pkg_file}"
