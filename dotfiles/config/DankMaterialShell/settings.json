@@ -5,15 +5,17 @@
   "registryThemeVariants": {
     "catppuccin": {
       "dark": {
-        "flavor": "macchiato",
+        "flavor": "mocha",
         "accent": "blue"
       }
     },
-    "gnomeAdwaita": "green",
-    "everforest": "hard"
+    "gnomeAdwaita": "slate",
+    "everforest": "soft"
   },
+  "matugenScheme": "scheme-smart",
+  "matugenSourceMode": "lightness",
   "dockTransparency": 0,
-  "widgetBackgroundColor": "s",
+  "widgetBackgroundColor": "sth",
   "cornerRadius": 12,
   "mouseNaturalScroll": true,
   "touchpadNaturalScroll": false,
@@ -53,6 +55,7 @@
   "textRenderType": 1,
   "textRenderQuality": 3,
   "lockBeforeSuspend": true,
+  "terminalsAlwaysDark": true,
   "matugenTemplateNeovim": true,
   "showDock": true,
   "dockSmartAutoHide": true,
