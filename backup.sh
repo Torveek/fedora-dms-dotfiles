@@ -29,9 +29,9 @@ Options:
   --all             Perform a full backup of all components (default if no flags)
   --dms             Back up DMS & Niri configs, COPRs, and core packages
   --repos           Back up COPR and third-party RPM repository lists
-  --packages        Back up DNF user-installed packages and VSCodium extensions
+  --packages        Back up DNF user-installed packages
   --flatpaks        Back up Flatpak remotes and installed applications
-  --dotfiles        Back up tracked ~/.config, home dotfiles, and fonts
+  --dotfiles        Back up tracked ~/.config, Zsh shell dotfiles, and fonts
   --dconf           Back up dconf desktop settings (themes, fonts, dark mode)
   --services        Back up user systemd services
 

@@ -1,8 +1,0 @@
-arcticicestudio.nord-visual-studio-code
-continue.continue
-enkia.tokyo-night
-gigacode.gigacode-vscode
-google.google-antigravity
-saoudrizwan.claude-dev
-zokugun.cron-tasks
-zokugun.sync-settings

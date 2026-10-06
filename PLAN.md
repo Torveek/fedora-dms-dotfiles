@@ -36,13 +36,13 @@ flowchart TD
         REPO_PHASE["2. Enable Secondary Repos:\n- RPM Fusion (Free/Non-free)\n- Third-party repos (VSCodium, etc.)\n- Other COPRs (dejan/lazygit, imput/helium)"]
         PKG_PHASE["3. Install User DNF Packages:\n- Batch install dnf-packages.txt with gum spin"]
         FP_PHASE["4. Flatpaks:\n- Add remotes (Flathub, Fedora)\n- Install Flatpak apps"]
-        DOT_PHASE["5. Remaining Dotfiles & Fonts:\n- Backup existing to ~/.dotfiles_backup/...\n- Sync Alacritty, Fastfetch, Neovim, GTK, bashrc\n- Install fonts in ~/.local/share/fonts"]
+        DOT_PHASE["5. Remaining Dotfiles & Fonts:\n- Backup existing to ~/.dotfiles_backup/...\n- Sync Alacritty, Fastfetch, Neovim, GTK, Zsh configs\n- Bootstrap Oh My Zsh & plugins\n- Install fonts in ~/.local/share/fonts"]
         DCONF_PHASE["6. Desktop Settings:\n- Load dconf settings (dark mode, fonts, themes)"]
-        EXT_PHASE["7. Extensions & Secondary Services:\n- Install VSCodium extensions\n- Verify services"]
+        SVC_PHASE["7. Secondary Services:\n- Verify and enable systemd user services"]
         DONE["8. Completion Summary (gum style banner)"]
     end
 
-    BOOT --> DMS_PHASE --> REPO_PHASE --> PKG_PHASE --> FP_PHASE --> DOT_PHASE --> DCONF_PHASE --> EXT_PHASE --> DONE
+    BOOT --> DMS_PHASE --> REPO_PHASE --> PKG_PHASE --> FP_PHASE --> DOT_PHASE --> DCONF_PHASE --> SVC_PHASE --> DONE
 ```
 
 ---
@@ -79,10 +79,8 @@ flowchart TD
 │   │   └── apps.txt                # Flatpak app IDs
 │   ├── dconf/
 │   │   └── settings.dconf          # dconf dump for GTK theme, dark mode, fonts
-│   ├── services/
-│   │   └── user-services.txt       # Enabled user systemd units
-│   └── extensions/
-│       └── vscodium.txt            # VSCodium extension IDs
+│   └── services/
+│       └── user-services.txt       # Enabled user systemd units
 └── dotfiles/
     ├── config/                     # Mapped to ~/.config/
     │   ├── DankMaterialShell/      # DMS settings, themes, plugins
@@ -101,8 +99,9 @@ flowchart TD
     │   ├── starship.toml
     │   └── xsettingsd/
     ├── home/                       # Mapped to ~/
-    │   ├── .bashrc
-    │   ├── .bash_profile
+    │   ├── .zshrc
+    │   ├── .zprofile
+    │   ├── .zsh_aliases
     │   ├── .gitconfig
     │   ├── .xprofile
     │   └── .gtkrc-2.0

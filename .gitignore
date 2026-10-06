@@ -28,3 +28,12 @@ scratch/
 
 # Untracked editors
 dotfiles/config/VSCodium/
+
+# Shell history & dumps (never commit)
+*.histfile
+*.zcompdump*
+*.zsh_history
+*.bash_history
+
+# Excluded shell configs
+dotfiles/home/.bash*

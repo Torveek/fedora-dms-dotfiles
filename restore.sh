@@ -58,9 +58,9 @@ Options:
   --no-skip-unavailable Do not skip unavailable packages (fail if any package is missing)
   --dms-only            Restore ONLY Dank Material Shell & Niri priority setup
   --repos               Restore secondary COPRs and RPM repos
-  --packages            Restore DNF user-installed packages and VSCodium extensions
+  --packages            Restore DNF user-installed packages
   --flatpaks            Restore Flatpak remotes and applications
-  --dotfiles            Restore dotfiles and fonts (with timestamped safety backups)
+  --dotfiles            Restore Zsh dotfiles, Oh My Zsh plugins, and fonts (with safety backups)
   --dconf               Restore dconf desktop settings (themes, fonts, dark mode)
   --services            Restore systemd user services
 
@@ -247,7 +247,7 @@ if [ "$DO_REPOS" = "true" ]; then
     restore_repos
 fi
 
-# Phase 3: DNF User Packages & VSCodium Extensions
+# Phase 3: DNF User Packages
 if [ "$DO_PACKAGES" = "true" ]; then
     restore_packages
 fi

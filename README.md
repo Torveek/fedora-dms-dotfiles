@@ -46,7 +46,7 @@ fedora-dms-dotfiles/
 │   ├── ui.sh                       # gum UI wrappers, spinners, badges & ANSI fallback
 │   ├── dms_phase.sh                # Phase 1: DMS & Niri priority setup (COPRs, core RPMs, configs, service)
 │   ├── repos.sh                    # Phase 2: Secondary COPRs and RPM Fusion / third-party repos
-│   ├── packages.sh                 # Phase 3: DNF package export & resilient batch install + VSCodium extensions
+│   ├── packages.sh                 # Phase 3: DNF package export & resilient batch install
 │   ├── flatpaks.sh                 # Phase 4: Flatpak remotes & applications export & install
 │   ├── dotfiles.sh                 # Phase 5: Dotfile backup, restore, safety backups, font cache refresh
 │   ├── dconf.sh                    # Phase 6: dconf desktop settings dump & import
@@ -64,10 +64,8 @@ fedora-dms-dotfiles/
 │   │   └── apps.txt                # Flatpak application IDs
 │   ├── dconf/
 │   │   └── settings.dconf          # GNOME/GTK dark mode, fonts, themes dconf dump
-│   ├── services/
-│   │   └── user-services.txt       # Enabled custom systemd user services
-│   └── extensions/
-│       └── vscodium.txt            # VSCodium extension IDs
+│   └── services/
+│       └── user-services.txt       # Enabled custom systemd user services
 └── dotfiles/
     ├── config/                     # Mapped to ~/.config/
     │   ├── DankMaterialShell/      # DMS settings, plugins, themes, changelogs
@@ -85,8 +83,9 @@ fedora-dms-dotfiles/
     │   ├── starship.toml           # Starship cross-shell prompt configuration
     │   └── mimeapps.list           # Default file association mappings
     ├── home/                       # Mapped to ~/
-    │   ├── .bashrc                 # Bash aliases, functions, environment variables
-    │   ├── .bash_profile          # Login shell environment
+    │   ├── .zshrc                  # Zsh interactive configuration & Oh My Zsh plugins
+    │   ├── .zprofile               # Login shell environment & PATH setup
+    │   ├── .zsh_aliases            # Custom shell aliases and helper functions
     │   ├── .gitconfig              # Git configuration
     │   ├── .xprofile               # X11 / Wayland session profile
     │   └── .gtkrc-2.0              # GTK 2 legacy application styling
@@ -159,9 +158,9 @@ If you only need specific components restored:
 ```bash
 ./restore.sh --dms-only       # Quick setup: DMS, Niri, Quickshell & dms.service
 ./restore.sh --repos          # Enable secondary COPRs & RPM repositories
-./restore.sh --packages       # Install user DNF packages & VSCodium extensions
+./restore.sh --packages       # Install user DNF packages
 ./restore.sh --flatpaks       # Configure Flatpak remotes & install applications
-./restore.sh --dotfiles       # Restore dotfiles and fonts (with safety backup)
+./restore.sh --dotfiles       # Restore Zsh dotfiles, Oh My Zsh plugins, and fonts (with safety backup)
 ./restore.sh --dconf          # Load desktop dconf settings (themes, fonts, dark mode)
 ./restore.sh --services       # Enable and reload systemd user services
 ```
@@ -221,9 +220,9 @@ Keep your dotfiles and package lists in sync as your system evolves.
 ```bash
 ./backup.sh --dms             # Only DankMaterialShell and Niri configs/packages
 ./backup.sh --repos           # Only COPR and RPM repository lists
-./backup.sh --packages        # Only DNF user-installed packages & VSCodium extensions
+./backup.sh --packages        # Only DNF user-installed packages
 ./backup.sh --flatpaks        # Only Flatpak apps and remotes
-./backup.sh --dotfiles        # Only tracked dotfiles and fonts
+./backup.sh --dotfiles        # Only tracked ~/.config, Zsh dotfiles, and fonts
 ./backup.sh --dconf           # Only desktop dconf settings
 ./backup.sh --services        # Only systemd user services
 ```
@@ -255,9 +254,9 @@ Restoration executes in a structured, fault-tolerant sequence:
 flowchart TD
     Start(["./restore.sh"]) --> P1["Phase 1: DMS Priority Setup\n• Official DankLinux installer (curl ... | sh)\n• Automatic fallback to manual COPR & core RPMs\n• Deploy ~/.config/DankMaterialShell & niri\n• Enable dms.service"]
     P1 --> P2["Phase 2: Secondary Repositories\n• RPM Fusion (free/non-free)\n• Custom COPRs (imput/helium, etc.)"]
-    P2 --> P3["Phase 3: DNF Packages & Extensions\n• Batch DNF install (fallback to individual)\n• VSCodium extensions install"]
+    P2 --> P3["Phase 3: DNF Packages\n• Batch DNF install (fallback to individual)"]
     P3 --> P4["Phase 4: Flatpaks\n• Add Flathub remote\n• Install Flatpak applications"]
-    P4 --> P5["Phase 5: Dotfiles & Fonts\n• Create timestamped safety backup in ~/.dotfiles_backup/\n• Sync ~/.config/, ~/, and ~/.local/share/fonts\n• Rebuild font cache with fc-cache"]
+    P4 --> P5["Phase 5: Dotfiles & Fonts\n• Create timestamped safety backup in ~/.dotfiles_backup/\n• Sync ~/.config/, ~/, and ~/.local/share/fonts\n• Bootstrap Oh My Zsh & custom plugins\n• Rebuild font cache with fc-cache"]
     P5 --> P6["Phase 6: Desktop dconf Settings\n• Load GTK theme, font scale, dark mode via dconf"]
     P6 --> P7["Phase 7: Systemd User Services\n• Reload systemd daemon\n• Enable custom user services"]
     P7 --> Finish(["Restoration Complete!"])
@@ -274,11 +273,10 @@ flowchart TD
 | | Quickshell, Matugen, dgop | `dms.service` & `~/.config/niri/dms/` |
 | **Terminals & Prompt** | Alacritty | `~/.config/alacritty/` |
 | | Starship Prompt | `~/.config/starship.toml` |
-| | Bash Shell | `~/.bashrc`, `~/.bash_profile` |
+| | Zsh Shell | `~/.zshrc`, `~/.zprofile`, `~/.zsh_aliases` |
 | | Cava Audio Visualizer | `~/.config/cava/` |
 | | Fastfetch | `~/.config/fastfetch/` |
 | **Editors & Dev** | Neovim (LazyVim setup) | `~/.config/nvim/` |
-| | VSCodium Extensions | `data/extensions/vscodium.txt` |
 | | Lazygit & Git | `~/.config/lazygit/`, `~/.gitconfig` |
 | **File Management** | Double Commander | `~/.config/doublecmd/` |
 | **Theming & Desktop** | GTK 3.0 & GTK 4.0 | `~/.config/gtk-3.0/`, `~/.config/gtk-4.0/` |
@@ -303,7 +301,7 @@ Whenever `restore.sh` modifies an existing configuration in `~/.config` or `~/`,
 │   ├── DankMaterialShell/
 │   ├── alacritty/
 │   └── niri/
-├── .bashrc
+├── .zshrc
 └── .gitconfig
 ```
 If you ever want to revert a restore, your original files remain untouched in `~/.dotfiles_backup/`.

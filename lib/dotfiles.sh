@@ -50,6 +50,10 @@ backup_dotfiles() {
 
     # 3. Tracked home dotfiles (~/.*)
     for file in "${TRACKED_HOME_FILES[@]}"; do
+        # Explicit guard: never back up bash files or history files
+        if [[ "$file" =~ ^\.bash ]] || [[ "$file" =~ (history|histfile) ]]; then
+            continue
+        fi
         local src="${HOME}/${file}"
         local dest="${DOTFILES_DIR}/home/${file}"
         if [ -f "$src" ] || [ -L "$src" ]; then
@@ -152,6 +156,11 @@ restore_dotfiles() {
             name=$(basename "$item")
             [ "$name" = "." ] || [ "$name" = ".." ] && continue
 
+            # Explicit guard: never restore bash configurations or history files
+            if [[ "$name" =~ ^\.bash ]] || [[ "$name" =~ (history|histfile) ]]; then
+                continue
+            fi
+
             local dest="${HOME}/${name}"
             safe_backup_target "$dest" "${name}"
 
@@ -183,5 +192,67 @@ restore_dotfiles() {
         fi
     fi
 
+    # 4. Bootstrap Zsh environment (Oh My Zsh, custom plugins, default shell)
+    bootstrap_zsh_environment
+
     ui_success "Dotfiles & Fonts Restoration Completed!"
+}
+
+bootstrap_zsh_environment() {
+    if [ "${ZSH_BOOTSTRAP_OHMYZSH:-false}" = "true" ]; then
+        ui_step "Checking Zsh & Oh My Zsh Environment"
+        if [ ! -d "${HOME}/.oh-my-zsh" ]; then
+            if [ "${DRY_RUN:-false}" = "true" ]; then
+                ui_dryrun "Would install Oh My Zsh into ${HOME}/.oh-my-zsh"
+            else
+                ui_info "Oh My Zsh not detected. Installing Oh My Zsh..."
+                if command -v git >/dev/null 2>&1; then
+                    git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git "${HOME}/.oh-my-zsh"
+                    ui_success "Oh My Zsh installed to ~/.oh-my-zsh"
+                else
+                    ui_warn "git is not installed; skipping Oh My Zsh clone."
+                fi
+            fi
+        else
+            ui_info "Oh My Zsh is already installed at ~/.oh-my-zsh"
+        fi
+
+        # Install custom plugins
+        for entry in "${ZSH_CUSTOM_PLUGINS[@]}"; do
+            local pname="${entry%%:*}"
+            local purl="${entry#*:}"
+            local pdir="${HOME}/.oh-my-zsh/custom/plugins/${pname}"
+            if [ ! -d "$pdir" ]; then
+                if [ "${DRY_RUN:-false}" = "true" ]; then
+                    ui_dryrun "Would clone custom Zsh plugin ${pname} from ${purl}"
+                else
+                    if command -v git >/dev/null 2>&1; then
+                        ui_info "Installing custom Zsh plugin: ${pname}..."
+                        mkdir -p "$(dirname "$pdir")"
+                        git clone --depth=1 "$purl" "$pdir"
+                        ui_success "Installed Zsh plugin: ${pname}"
+                    fi
+                fi
+            else
+                ui_info "Custom Zsh plugin ${pname} is already present"
+            fi
+        done
+    fi
+
+    # Check default shell
+    local zsh_bin
+    zsh_bin=$(command -v zsh 2>/dev/null || true)
+    if [ -n "$zsh_bin" ] && [ "$SHELL" != "$zsh_bin" ]; then
+        if [ "${DRY_RUN:-false}" = "true" ]; then
+            ui_dryrun "Would prompt to set default shell to ${zsh_bin} (current: ${SHELL})"
+        else
+            if [ "${ASSUME_YES:-false}" = "true" ] || ui_confirm "Your current shell is ${SHELL}. Set default shell to zsh (${zsh_bin})?" true; then
+                if chsh -s "$zsh_bin" "$USER" 2>/dev/null; then
+                    ui_success "Default shell set to ${zsh_bin}"
+                else
+                    ui_warn "Could not change default shell automatically. You can run: chsh -s ${zsh_bin}"
+                fi
+            fi
+        fi
+    fi
 }
