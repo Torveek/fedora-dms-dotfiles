@@ -39,6 +39,8 @@ source "${SCRIPT_DIR}/lib/dotfiles.sh"
 source "${SCRIPT_DIR}/lib/dconf.sh"
 source "${SCRIPT_DIR}/lib/services.sh"
 
+trap ui_flush_input EXIT
+
 show_help() {
     cat << EOF
 Usage: $(basename "$0") [OPTIONS]

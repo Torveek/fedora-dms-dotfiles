@@ -51,69 +51,46 @@ ui_header() {
 
 ui_step() {
     local step_title="$1"
-    if has_gum; then
-        gum style \
-            --foreground 39 \
-            --bold \
-            --margin "1 0 0 0" \
-            "➜ $step_title"
-    else
-        echo -e "\n${ANSI_BOLD}${ANSI_BLUE}➜ $step_title${ANSI_RESET}"
-    fi
+    echo -e "\n\033[38;5;39;1m➜ $step_title\033[0m"
 }
 
 ui_info() {
     local msg="$1"
-    if has_gum; then
-        echo "$(gum style --foreground 39 --bold "[INFO]") $msg"
-    else
-        echo -e "${ANSI_BOLD}${ANSI_BLUE}[INFO]${ANSI_RESET} $msg"
-    fi
+    echo -e "\033[38;5;39;1m[INFO]\033[0m $msg"
 }
 
 ui_success() {
     local msg="$1"
-    if has_gum; then
-        echo "$(gum style --foreground 48 --bold "[✓]") $msg"
-    else
-        echo -e "${ANSI_BOLD}${ANSI_GREEN}[✓]${ANSI_RESET} $msg"
-    fi
+    echo -e "\033[38;5;48;1m[✓]\033[0m $msg"
 }
 
 ui_warn() {
     local msg="$1"
-    if has_gum; then
-        echo "$(gum style --foreground 220 --bold "[WARN]") $msg"
-    else
-        echo -e "${ANSI_BOLD}${ANSI_YELLOW}[WARN]${ANSI_RESET} $msg"
-    fi
+    echo -e "\033[38;5;220;1m[WARN]\033[0m $msg"
 }
 
 ui_error() {
     local msg="$1"
-    if has_gum; then
-        echo "$(gum style --foreground 196 --bold "[ERROR]") $msg" >&2
-    else
-        echo -e "${ANSI_BOLD}${ANSI_RED}[ERROR]${ANSI_RESET} $msg" >&2
-    fi
+    echo -e "\033[38;5;196;1m[ERROR]\033[0m $msg" >&2
 }
 
 ui_dryrun() {
     local msg="$1"
-    if has_gum; then
-        echo "$(gum style --foreground 201 --bold "[DRY-RUN]") $msg"
-    else
-        echo -e "${ANSI_BOLD}${ANSI_MAGENTA}[DRY-RUN]${ANSI_RESET} $msg"
-    fi
+    echo -e "\033[38;5;201;1m[DRY-RUN]\033[0m $msg"
 }
 
 ui_list_item() {
     local item="$1"
     local color="${2:-220}"
-    if has_gum; then
-        echo "  $(gum style --foreground "$color" "•") $item"
-    else
-        echo -e "  ${ANSI_YELLOW}•${ANSI_RESET} $item"
+    echo -e "  \033[38;5;${color}m•\033[0m $item"
+}
+
+ui_flush_input() {
+    if [ -t 0 ]; then
+        if command -v python3 >/dev/null 2>&1; then
+            python3 -c "import sys, termios; termios.tcflush(sys.stdin, termios.TCIFLUSH)" 2>/dev/null || true
+        fi
+        while read -t 0.02 -n 1000 -r; do :; done 2>/dev/null || true
     fi
 }
 
