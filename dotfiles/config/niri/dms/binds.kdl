@@ -126,7 +126,7 @@ binds {
     Print { screenshot; }
     XF86Launch1 { screenshot; }
     Mod+Shift+E { quit; }
-    Mod+B hotkey-overlay-title="helium" { spawn "helium"; }
+    Mod+B hotkey-overlay-title="firefox" { spawn "firefox"; }
     Mod+E hotkey-overlay-title="Thunar" { spawn "thunar"; }
     Mod+T hotkey-overlay-title="Open Terminal" { spawn "alacritty"; }
     Mod+D repeat=false { toggle-overview; }

@@ -31,8 +31,8 @@ window-position=(20, 20)
 window-size=(762, 765)
 
 [org/virt-manager/virt-manager]
-manager-window-height=812
-manager-window-width=762
+manager-window-height=1028
+manager-window-width=954
 
 [org/virt-manager/virt-manager/connections]
 autoconnect=['qemu:///system']
@@ -55,7 +55,7 @@ network-traffic=false
 autoconnect=1
 resize-guest=0
 scaling=2
-vm-window-size=(1528, 812)
+vm-window-size=(1920, 1080)
 
 [system/proxy]
 autoconfig-url='http://127.0.0.1:33331/commands/pac'

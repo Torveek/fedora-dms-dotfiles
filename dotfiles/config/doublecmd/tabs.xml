@@ -3,7 +3,7 @@
   <Tabs>
     <OpenedTabs>
       <Left>
-        <ActiveTab>0</ActiveTab>
+        <ActiveTab>1</ActiveTab>
         <Tab>
           <FileView Type="columns">
             <Sortings>
@@ -16,7 +16,6 @@
               <Entry Active="True">
                 <FileSource Type="FileSystem"/>
                 <Paths>
-                  <Path Filename=".git">/home/torvik/fedora-dms-dotfiles/</Path>
                   <Path Filename="..">/home/torvik/fedora-dms-dotfiles/.git/</Path>
                   <Path Filename="home">/home/torvik/fedora-dms-dotfiles/</Path>
                   <Path Filename=".local">/home/torvik/fedora-dms-dotfiles/home/</Path>
@@ -65,7 +64,78 @@
                   <Path Filename="f73584a9-37a6-4908-987d-df1a2373d7af">/home/torvik/.gemini/antigravity-cli/brain/</Path>
                   <Path Filename="..">/home/torvik/.gemini/antigravity-cli/brain/f73584a9-37a6-4908-987d-df1a2373d7af/</Path>
                   <Path Filename="38ba6c57-dbb8-41ed-b879-8de6ca313424">/home/torvik/.gemini/antigravity-cli/brain/</Path>
-                  <Path Filename="backup_restore_plan.md">/home/torvik/.gemini/antigravity-cli/brain/38ba6c57-dbb8-41ed-b879-8de6ca313424/</Path>
+                  <Path Filename="..">/home/torvik/.gemini/antigravity-cli/brain/38ba6c57-dbb8-41ed-b879-8de6ca313424/</Path>
+                  <Path Filename="38ba6c57-dbb8-41ed-b879-8de6ca313424">/home/torvik/.gemini/antigravity-cli/brain/</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/home/.local/bin/</Path>
+                  <Path Filename="share">/home/torvik/fedora-dms-dotfiles/home/.local/</Path>
+                  <Path Filename="fonts">/home/torvik/fedora-dms-dotfiles/home/.local/share/</Path>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/home/.local/share/fonts/</Path>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/home/.local/share/</Path>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/home/.local/</Path>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/home/</Path>
+                  <Path Filename="packages">/home/torvik/fedora-dms-dotfiles/</Path>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/packages/</Path>
+                  <Path Filename="scripts">/home/torvik/fedora-dms-dotfiles/</Path>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/scripts/</Path>
+                  <Path Filename="system">/home/torvik/fedora-dms-dotfiles/</Path>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/system/</Path>
+                  <Path Filename="systemd">/home/torvik/fedora-dms-dotfiles/</Path>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/systemd/</Path>
+                  <Path Filename="systemd">/home/torvik/fedora-dms-dotfiles/</Path>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/systemd/</Path>
+                  <Path Filename="home">/home/torvik/fedora-dms-dotfiles/</Path>
+                  <Path Filename=".config">/home/torvik/fedora-dms-dotfiles/home/</Path>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/home/.config/</Path>
+                  <Path Filename=".local">/home/torvik/fedora-dms-dotfiles/home/</Path>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/home/.local/</Path>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/home/</Path>
+                  <Path Filename="..">/home/torvik/fedora-dms-dotfiles/</Path>
+                  <Path Filename=".config">/home/torvik/</Path>
+                  <Path Filename="nvim">/home/torvik/.config/</Path>
+                  <Path Filename="..">/home/torvik/.config/nvim/</Path>
+                  <Path Filename="VSCodium">/home/torvik/.config/</Path>
+                  <Path Filename="..">/home/torvik/.config/VSCodium/</Path>
+                  <Path Filename="VSCodium">/home/torvik/.config/</Path>
+                  <Path Filename=".config">/home/torvik/</Path>
+                  <Path Filename="torvik">/home/</Path>
+                  <Path Filename="Downloads">/home/torvik/</Path>
+                  <Path Filename="..">/home/torvik/Downloads/</Path>
+                  <Path Filename=".gemini">/home/torvik/</Path>
+                  <Path Filename="antigravity">/home/torvik/.gemini/</Path>
+                  <Path Filename="brain">/home/torvik/.gemini/antigravity/</Path>
+                  <Path Filename="..">/home/torvik/.gemini/antigravity/brain/</Path>
+                  <Path Filename="..">/home/torvik/.gemini/antigravity/</Path>
+                  <Path Filename="antigravity-cli">/home/torvik/.gemini/</Path>
+                  <Path Filename="brain">/home/torvik/.gemini/antigravity-cli/</Path>
+                  <Path Filename="f73584a9-37a6-4908-987d-df1a2373d7af">/home/torvik/.gemini/antigravity-cli/brain/</Path>
+                  <Path Filename="..">/home/torvik/.gemini/antigravity-cli/brain/f73584a9-37a6-4908-987d-df1a2373d7af/</Path>
+                  <Path Filename="38ba6c57-dbb8-41ed-b879-8de6ca313424">/home/torvik/.gemini/antigravity-cli/brain/</Path>
+                  <Path Filename="..">/home/torvik/.gemini/antigravity-cli/brain/38ba6c57-dbb8-41ed-b879-8de6ca313424/</Path>
+                  <Path Filename="38ba6c57-dbb8-41ed-b879-8de6ca313424">/home/torvik/.gemini/antigravity-cli/brain/</Path>
+                  <Path Filename="brain">/home/torvik/.gemini/antigravity-cli/</Path>
+                  <Path Filename="tmp">/home/torvik/.gemini/</Path>
+                  <Path Filename=".config">/home/torvik/</Path>
+                  <Path Filename="..">/home/torvik/.config/</Path>
                 </Paths>
               </Entry>
             </History>
