@@ -29,6 +29,10 @@ window-size=(762, 765)
 manager-window-height=1028
 manager-window-width=954
 
+[org/virt-manager/virt-manager/confirm]
+forcepoweroff=true
+unapplied-dev=true
+
 [org/virt-manager/virt-manager/connections]
 autoconnect=['qemu:///system']
 uris=['qemu:///system']

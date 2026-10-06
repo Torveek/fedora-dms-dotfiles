@@ -141,6 +141,7 @@ restore_dotfiles() {
                     rsync -a "${item}/" "${dest}/"
                 else
                     mkdir -p "$(dirname "$dest")"
+                    rm -f "$dest"
                     cp -a "$item" "$dest"
                 fi
                 ui_success "Restored ~/.config/${name}"
@@ -167,6 +168,7 @@ restore_dotfiles() {
             if [ "${DRY_RUN:-false}" = "true" ]; then
                 ui_dryrun "Would restore home file: ${item} -> ${dest}"
             else
+                rm -f "$dest"
                 cp -a "$item" "$dest"
                 ui_success "Restored ~/${name}"
             fi

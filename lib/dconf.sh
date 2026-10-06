@@ -17,15 +17,16 @@ backup_dconf() {
     else
         # Dump dconf and filter out non-writable system schemas (e.g. login-screen)
         dconf dump / 2>/dev/null | awk '
-            BEGIN { skip = 0 }
-            /^\[/ {
+            BEGIN { in_section = 0; skip = 0 }
+            /^\[[a-zA-Z0-9_\/-]+\]/ {
+                in_section = 1
                 if ($0 ~ /^\[org\/gnome\/login-screen\]/) {
                     skip = 1
                 } else {
                     skip = 0
                 }
             }
-            !skip { print }
+            in_section && !skip { print }
         ' > "$dconf_file"
         local lines
         lines=$(wc -l < "$dconf_file")
@@ -55,15 +56,16 @@ restore_dconf() {
         local tmp_dconf
         tmp_dconf=$(mktemp)
         awk '
-            BEGIN { skip = 0 }
-            /^\[/ {
+            BEGIN { in_section = 0; skip = 0 }
+            /^\[[a-zA-Z0-9_\/-]+\]/ {
+                in_section = 1
                 if ($0 ~ /^\[org\/gnome\/login-screen\]/) {
                     skip = 1
                 } else {
                     skip = 0
                 }
             }
-            !skip { print }
+            in_section && !skip { print }
         ' "$dconf_file" > "$tmp_dconf"
 
         if dconf load / < "$tmp_dconf"; then
