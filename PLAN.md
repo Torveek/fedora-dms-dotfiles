@@ -99,6 +99,7 @@ flowchart TD
     │   ├── starship.toml
     │   └── xsettingsd/
     ├── home/                       # Mapped to ~/
+    │   ├── .zshenv
     │   ├── .zshrc
     │   ├── .zprofile
     │   ├── .zsh_aliases

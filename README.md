@@ -83,6 +83,7 @@ fedora-dms-dotfiles/
     │   ├── starship.toml           # Starship cross-shell prompt configuration
     │   └── mimeapps.list           # Default file association mappings
     ├── home/                       # Mapped to ~/
+    │   ├── .zshenv                 # Global environment & PATH configuration
     │   ├── .zshrc                  # Zsh interactive configuration & Oh My Zsh plugins
     │   ├── .zprofile               # Login shell environment & PATH setup
     │   ├── .zsh_aliases            # Custom shell aliases and helper functions
@@ -273,7 +274,7 @@ flowchart TD
 | | Quickshell, Matugen, dgop | `dms.service` & `~/.config/niri/dms/` |
 | **Terminals & Prompt** | Alacritty | `~/.config/alacritty/` |
 | | Starship Prompt | `~/.config/starship.toml` |
-| | Zsh Shell | `~/.zshrc`, `~/.zprofile`, `~/.zsh_aliases` |
+| | Zsh Shell | `~/.zshenv`, `~/.zshrc`, `~/.zprofile`, `~/.zsh_aliases` |
 | | Cava Audio Visualizer | `~/.config/cava/` |
 | | Fastfetch | `~/.config/fastfetch/` |
 | **Editors & Dev** | Neovim (LazyVim setup) | `~/.config/nvim/` |

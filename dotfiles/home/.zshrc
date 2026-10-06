@@ -1,3 +1,34 @@
+# -------------------------------------------------------------------
+# Environment & PATH Configuration (Loaded before plugins and themes)
+# -------------------------------------------------------------------
+typeset -U path
+path=(
+  "$HOME/.local/bin"
+  "/usr/local/bin"
+  "/usr/local/sbin"
+  "/home/linuxbrew/.linuxbrew/bin"
+  "/home/linuxbrew/.linuxbrew/sbin"
+  "$HOME/.linuxbrew/bin"
+  "$HOME/.linuxbrew/sbin"
+  "$HOME/.local/share/pnpm"
+  "$HOME/.npm-global/bin"
+  "$HOME/.yarn/bin"
+  "$HOME/.yarn/global/node_modules/.bin"
+  "$HOME/go/bin"
+  "$HOME/.deno/bin"
+  "$HOME/.cargo/bin"
+  "/var/lib/flatpak/exports/bin"
+  "$HOME/.local/share/flatpak/exports/bin"
+  $path
+)
+export PATH
+
+# XDG Base Directory specification
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -28,29 +59,6 @@ plugins=(
 )
 
 source "$ZSH/oh-my-zsh.sh"
-
-# -------------------------------------------------------------------
-# Environment & PATH Configuration
-# -------------------------------------------------------------------
-typeset -U path
-path=(
-  "$HOME/.local/bin"
-  "/home/linuxbrew/.linuxbrew/bin"
-  "/home/linuxbrew/.linuxbrew/sbin"
-  "$HOME/.linuxbrew/bin"
-  "$HOME/.linuxbrew/sbin"
-  "$HOME/.local/share/pnpm"
-  "$HOME/.npm-global/bin"
-  "$HOME/.yarn/bin"
-  "$HOME/.yarn/global/node_modules/.bin"
-  "$HOME/go/bin"
-  "$HOME/.deno/bin"
-  "$HOME/.cargo/bin"
-  "/var/lib/flatpak/exports/bin"
-  "$HOME/.local/share/flatpak/exports/bin"
-  $path
-)
-export PATH
 
 # Default editor
 if command -v nvim >/dev/null 2>&1; then
