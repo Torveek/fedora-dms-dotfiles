@@ -1,0 +1,212 @@
+{
+  "appUsageRanking": {
+    "Alacritty": {
+      "name": "Alacritty",
+      "exec": "alacritty",
+      "icon": "Alacritty",
+      "comment": "A fast, cross-platform, OpenGL terminal emulator",
+      "usageCount": 1,
+      "lastUsed": 1783283354170
+    },
+    "org.mozilla.firefox": {
+      "name": "Firefox",
+      "exec": "firefox %u",
+      "icon": "firefox",
+      "comment": "Browse the Web",
+      "usageCount": 37,
+      "lastUsed": 1791207462759
+    },
+    "btrfs-assistant": {
+      "name": "Btrfs Assistant",
+      "exec": "btrfs-assistant-launcher",
+      "icon": "btrfs-assistant",
+      "comment": "Change system settings",
+      "usageCount": 13,
+      "lastUsed": 1790627330118
+    },
+    "kvantummanager": {
+      "name": "Kvantum Manager",
+      "exec": "kvantummanager",
+      "icon": "kvantum",
+      "comment": "A simple GUI for installing, selecting and manipulating Kvantum themes",
+      "usageCount": 1,
+      "lastUsed": 1783368735038
+    },
+    "gimp": {
+      "name": "GNU Image Manipulation Program",
+      "exec": "gimp-3.2 %U",
+      "icon": "gimp",
+      "comment": "Create images and edit photographs",
+      "usageCount": 2,
+      "lastUsed": 1786132834118
+    },
+    "panel-preferences": {
+      "name": "Panel",
+      "exec": "xfce4-panel --preferences",
+      "icon": "org.xfce.panel",
+      "comment": "Customize the panel",
+      "usageCount": 2,
+      "lastUsed": 1787254287845
+    },
+    "Happ": {
+      "name": "Happ",
+      "exec": "/opt/happ/bin/Happ %f",
+      "icon": "happ",
+      "comment": "",
+      "usageCount": 19,
+      "lastUsed": 1787083118993
+    },
+    "AmneziaVPN": {
+      "name": "AmneziaVPN",
+      "exec": "AmneziaVPN",
+      "icon": "/usr/share/pixmaps/AmneziaVPN.png",
+      "comment": "Client of your self-hosted VPN",
+      "usageCount": 7,
+      "lastUsed": 1786132836658
+    },
+    "codium": {
+      "name": "VSCodium",
+      "exec": "/usr/share/codium/codium %F",
+      "icon": "vscodium",
+      "comment": "Code Editing. Redefined.",
+      "usageCount": 25,
+      "lastUsed": 1791141451732
+    },
+    "libreoffice-writer": {
+      "name": "LibreOffice Writer",
+      "exec": "libreoffice --writer %U",
+      "icon": "libreoffice-writer",
+      "comment": "Create and edit text and graphics in letters, reports, documents and Web pages.",
+      "usageCount": 2,
+      "lastUsed": 1783538543317
+    },
+    "thunar-settings": {
+      "name": "Thunar Preferences",
+      "exec": "thunar-settings",
+      "icon": "org.xfce.thunar",
+      "comment": "Configure the Thunar file manager",
+      "usageCount": 1,
+      "lastUsed": 1783454179574
+    },
+    "thunar": {
+      "name": "Thunar File Manager",
+      "exec": "thunar %U",
+      "icon": "org.xfce.thunar",
+      "comment": "Browse the filesystem with the file manager",
+      "usageCount": 11,
+      "lastUsed": 1791141362256
+    },
+    "qt6ct": {
+      "name": "Qt6 Settings",
+      "exec": "qt6ct",
+      "icon": "preferences-desktop-theme",
+      "comment": "Qt6 Configuration Tool",
+      "usageCount": 1,
+      "lastUsed": 1783620679504
+    },
+    "Clash Verge": {
+      "name": "Clash Verge",
+      "exec": "clash-verge %u",
+      "icon": "clash-verge",
+      "comment": "Clash Verge Rev",
+      "usageCount": 15,
+      "lastUsed": 1786744011715
+    },
+    "transmission-gtk": {
+      "name": "Transmission",
+      "exec": "transmission-gtk %U",
+      "icon": "transmission-gtk",
+      "comment": "Download and share files over BitTorrent",
+      "usageCount": 4,
+      "lastUsed": 1790441216346
+    },
+    "mpv": {
+      "name": "mpv Media Player",
+      "exec": "mpv --player-operation-mode=pseudo-gui -- %U",
+      "icon": "mpv",
+      "comment": "Play movies and songs",
+      "usageCount": 1,
+      "lastUsed": 1783711694020
+    },
+    "net.thunderbird.Thunderbird": {
+      "name": "Thunderbird",
+      "exec": "thunderbird %u",
+      "icon": "thunderbird",
+      "comment": "Send and Receive Email",
+      "usageCount": 3,
+      "lastUsed": 1790454901395
+    },
+    "doublecmd": {
+      "name": "Double Commander",
+      "exec": "doublecmd %F",
+      "icon": "doublecmd",
+      "comment": "Double Commander is a cross platform open source file manager with two panels side by side.",
+      "usageCount": 1,
+      "lastUsed": 1783886817567
+    },
+    "doublecmd-qt": {
+      "name": "Double Commander QT5",
+      "exec": "doublecmd-qt",
+      "icon": "doublecmd",
+      "comment": "Double Commander QT5 is a cross platform open source file manager with two panels side by side.",
+      "usageCount": 11,
+      "lastUsed": 1791212531979
+    },
+    "net.epson.epsonscan2": {
+      "name": "Epson Scan 2",
+      "exec": "/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=epsonscan2 net.epson.epsonscan2",
+      "icon": "net.epson.epsonscan2",
+      "comment": "",
+      "usageCount": 1,
+      "lastUsed": 1786186393926
+    },
+    "v2rayn": {
+      "name": "v2rayN",
+      "exec": "v2rayn",
+      "icon": "v2rayn",
+      "comment": "v2rayN for Red Hat Enterprise Linux",
+      "usageCount": 15,
+      "lastUsed": 1787083355618
+    },
+    "com.termius.Termius": {
+      "name": "Termius",
+      "exec": "/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=termius --file-forwarding com.termius.Termius @@u %U @@",
+      "icon": "com.termius.Termius",
+      "comment": "Desktop SSH Client",
+      "usageCount": 7,
+      "lastUsed": 1787342298660
+    },
+    "helium": {
+      "name": "Helium",
+      "exec": "helium %U",
+      "icon": "helium",
+      "comment": "Access the Internet",
+      "usageCount": 13,
+      "lastUsed": 1791054126868
+    },
+    "Throne": {
+      "name": "Throne",
+      "exec": "/opt/Throne/Throne -appdata",
+      "icon": "/opt/Throne/Throne.png",
+      "comment": "Qt based cross-platform GUI proxy configuration manager (backend: sing-box)",
+      "usageCount": 53,
+      "lastUsed": 1791267807941
+    },
+    "md.obsidian.Obsidian": {
+      "name": "Obsidian",
+      "exec": "/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=obsidian.sh --file-forwarding md.obsidian.Obsidian @@u %U @@",
+      "icon": "md.obsidian.Obsidian",
+      "comment": "Obsidian",
+      "usageCount": 15,
+      "lastUsed": 1790102327825
+    },
+    "virt-manager": {
+      "name": "Virtual Machine Manager",
+      "exec": "virt-manager",
+      "icon": "virt-manager",
+      "comment": "Manage virtual machines",
+      "usageCount": 7,
+      "lastUsed": 1791273670751
+    }
+  }
+}

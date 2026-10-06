@@ -194,7 +194,25 @@ restore_dotfiles() {
         fi
     fi
 
-    # 4. Bootstrap Zsh environment (Oh My Zsh, custom plugins, default shell)
+    # 4. Restore DMS runtime state if not skipped by Phase 1
+    if [ -d "${DOTFILES_DIR}/local_state" ] && [ "${SKIP_DMS_IN_DOTFILES:-false}" != "true" ]; then
+        for sdir in "${DMS_PRIORITY_STATE_DIRS[@]}"; do
+            local ssrc="${DOTFILES_DIR}/local_state/${sdir}"
+            local sdest="${HOME}/.local/state/${sdir}"
+            if [ -d "$ssrc" ]; then
+                safe_backup_target "$sdest" ".local/state/${sdir}"
+                if [ "${DRY_RUN:-false}" = "true" ]; then
+                    ui_dryrun "Would restore state directory: ${ssrc} -> ${sdest}"
+                else
+                    mkdir -p "$sdest"
+                    rsync -a "${ssrc}/" "${sdest}/"
+                    ui_success "Restored ~/.local/state/${sdir} (DMS session & locale settings)"
+                fi
+            fi
+        done
+    fi
+
+    # 5. Bootstrap Zsh environment (Oh My Zsh, custom plugins, default shell)
     bootstrap_zsh_environment
 
     ui_success "Dotfiles & Fonts Restoration Completed!"

@@ -42,11 +42,34 @@ backup_dms_phase() {
                 ui_dryrun "Would copy ${src} -> ${dest}"
             else
                 mkdir -p "$(dirname "$dest")"
-                rsync -a --delete --exclude='*.log' --exclude='cache/' --exclude='*.sock' "${src}/" "${dest}/"
+                rsync -a --delete --exclude='*.log*' --exclude='cache/' --exclude='*.sock' "${src}/" "${dest}/"
                 ui_success "Synced ~/.config/${dir} -> dotfiles/config/${dir}"
             fi
         else
             ui_warn "~/.config/${dir} not found, skipping."
+        fi
+    done
+
+    # 4. Export runtime state for DankMaterialShell (session.json with locale, pinned apps, weather)
+    for dir in "${DMS_PRIORITY_STATE_DIRS[@]}"; do
+        local src="${HOME}/.local/state/${dir}"
+        local dest="${DOTFILES_DIR}/local_state/${dir}"
+        if [ -d "$src" ]; then
+            if [ "${DRY_RUN:-false}" = "true" ]; then
+                ui_dryrun "Would copy ${src} -> ${dest}"
+            else
+                mkdir -p "$(dirname "$dest")"
+                rsync -a --delete \
+                    --exclude='*.log*' \
+                    --exclude='cache/' \
+                    --exclude='*.sock' \
+                    --exclude='pam/' \
+                    --exclude='plugins/dmsThemeSync/backups/' \
+                    "${src}/" "${dest}/"
+                ui_success "Synced ~/.local/state/${dir} -> dotfiles/local_state/${dir}"
+            fi
+        else
+            ui_warn "~/.local/state/${dir} not found, skipping."
         fi
     done
 }
@@ -238,7 +261,7 @@ dms_install_greeter() {
         return 0
     fi
 
-    ui_step "Phase 1.2: Configuring and Enabling DMS Greeter (greetd)"
+    ui_step "Phase 1.3: Configuring and Enabling DMS Greeter (greetd)"
 
     if [ "${DRY_RUN:-false}" = "true" ]; then
         ui_dryrun "Would execute: sudo dms-greeter install --yes"
@@ -280,11 +303,12 @@ dms_install_greeter() {
 }
 
 restore_dms_configs() {
-    ui_step "Phase 1.3: Deploying DMS & Niri Configurations"
+    ui_step "Phase 1.2: Deploying DMS & Niri Configurations & Session State"
     local backup_timestamp
     backup_timestamp=$(date +%Y%m%d_%H%M%S)
     local safety_backup_dir="${RESTORE_BACKUP_BASE}/${backup_timestamp}"
 
+    # 1. Deploy ~/.config entries
     for dir in "${DMS_PRIORITY_CONFIG_DIRS[@]}"; do
         local src="${DOTFILES_DIR}/config/${dir}"
         local dest="${HOME}/.config/${dir}"
@@ -309,13 +333,47 @@ restore_dms_configs() {
             ui_warn "Source dotfile directory ${src} not found in repo"
         fi
     done
+
+    # 2. Deploy ~/.local/state entries (DMS session.json, notepad-files, appusage.json)
+    for dir in "${DMS_PRIORITY_STATE_DIRS[@]}"; do
+        local src="${DOTFILES_DIR}/local_state/${dir}"
+        local dest="${HOME}/.local/state/${dir}"
+
+        if [ -d "$src" ]; then
+            if [ "${DRY_RUN:-false}" = "true" ]; then
+                if [ -e "$dest" ]; then
+                    ui_dryrun "Would backup existing ${dest} -> ${safety_backup_dir}/state_${dir}"
+                fi
+                ui_dryrun "Would deploy ${src} -> ${dest}"
+            else
+                if [ -e "$dest" ]; then
+                    mkdir -p "$safety_backup_dir"
+                    cp -a "$dest" "${safety_backup_dir}/state_${dir}"
+                    ui_info "Safety backup: ${dest} -> ${safety_backup_dir}/state_${dir}"
+                fi
+                mkdir -p "$dest"
+                rsync -a "${src}/" "${dest}/"
+                ui_success "Restored ~/.local/state/${dir} (DMS session, locale & widgets)"
+            fi
+        fi
+    done
+
+    # 3. Adapt home paths in restored JSON configs if destination user differs
+    if [ "${DRY_RUN:-false}" != "true" ] && [ "${HOME}" != "/home/torvik" ]; then
+        for check_dir in "${HOME}/.config/DankMaterialShell" "${HOME}/.local/state/DankMaterialShell"; do
+            if [ -d "$check_dir" ]; then
+                find "$check_dir" -type f -name "*.json" -exec sed -i "s|/home/torvik|${HOME}|g" {} + 2>/dev/null || true
+            fi
+        done
+    fi
 }
 
 restore_dms_service() {
-    ui_step "Phase 1.4: Enabling dms.service"
+    ui_step "Phase 1.4: Enabling and Refreshing dms.service"
     if [ "${DRY_RUN:-false}" = "true" ]; then
         ui_dryrun "Would run: systemctl --user daemon-reload"
         ui_dryrun "Would run: systemctl --user enable dms.service"
+        ui_dryrun "Would restart dms.service if active"
     else
         if command -v systemctl >/dev/null 2>&1; then
             systemctl --user daemon-reload || true
@@ -323,6 +381,12 @@ restore_dms_service() {
                 ui_success "Enabled systemd user service: dms.service"
             else
                 ui_warn "dms.service unit not yet available or failed to enable"
+            fi
+            # Restart dms.service if already running so restored session & settings load immediately
+            if systemctl --user is-active dms.service >/dev/null 2>&1; then
+                ui_info "Restarting active dms.service to apply restored configurations..."
+                systemctl --user restart dms.service 2>/dev/null || true
+                ui_success "Reloaded dms.service"
             fi
         fi
     fi
@@ -337,6 +401,9 @@ dms_install_standalone() {
     else
         restore_dms_auto
     fi
+
+    # Step: Deploy DMS & Niri Configurations & Session State
+    restore_dms_configs
 
     # Step: Configure & Enable DMS Greeter
     dms_install_greeter
@@ -358,11 +425,11 @@ restore_dms_phase() {
         restore_dms_auto
     fi
 
-    # Step 1.2: Configure & Enable DMS Greeter
-    dms_install_greeter
-
-    # Step 1.3: Deploy DMS & Niri Configurations
+    # Step 1.2: Deploy DMS & Niri Configurations & Session State (Before greeter sync)
     restore_dms_configs
+
+    # Step 1.3: Configure & Enable DMS Greeter (Syncs user theme & wallpaper to greeter)
+    dms_install_greeter
 
     # Step 1.4: Enable & Reload dms.service
     restore_dms_service

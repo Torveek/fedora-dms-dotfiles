@@ -73,6 +73,7 @@ fedora-dms-dotfiles/
     │   ├── alacritty/              # Alacritty configuration & theme
     │   ├── cava/                   # Cava audio visualizer configuration
     │   ├── doublecmd/              # Double Commander config, colors, shortcuts
+    │   ├── environment.d/          # User session environment variables (e.g. 90-dms.conf)
     │   ├── fastfetch/              # Fastfetch system info layout
     │   ├── fontconfig/             # Custom font rendering configurations
     │   ├── gtk-3.0/ & gtk-4.0/     # GTK themes, CSS styling, dank-colors
@@ -90,8 +91,10 @@ fedora-dms-dotfiles/
     │   ├── .gitconfig              # Git configuration
     │   ├── .xprofile               # X11 / Wayland session profile
     │   └── .gtkrc-2.0              # GTK 2 legacy application styling
-    └── local_share/                # Mapped to ~/.local/share/
-        └── fonts/                  # JetBrainsMono & MesloLGS Nerd Fonts
+    ├── local_share/                # Mapped to ~/.local/share/
+    │   └── fonts/                  # JetBrainsMono & MesloLGS Nerd Fonts
+    └── local_state/                # Mapped to ~/.local/state/
+        └── DankMaterialShell/      # DMS runtime session state (timeLocale, pinned apps, weather, notepad)
 ```
 
 ---
