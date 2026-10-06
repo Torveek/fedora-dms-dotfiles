@@ -11,11 +11,6 @@ monospace-font-name='MesloLGS Nerd Font 12'
 [org/gnome/desktop/wm/preferences]
 titlebar-font='MesloLGS Nerd Font Bold 11'
 
-[org/gnome/login-screen]
-enable-fingerprint-authentication=true
-enable-smartcard-authentication=false
-enable-switchable-authentication=false
-
 [org/gtk/settings/file-chooser]
 date-format='regular'
 location-mode='path-bar'

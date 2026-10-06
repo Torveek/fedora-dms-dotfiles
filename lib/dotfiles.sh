@@ -239,20 +239,38 @@ bootstrap_zsh_environment() {
         done
     fi
 
-    # Check default shell
+    # Check default login shell via /etc/passwd
     local zsh_bin
     zsh_bin=$(command -v zsh 2>/dev/null || true)
-    if [ -n "$zsh_bin" ] && [ "$SHELL" != "$zsh_bin" ]; then
+    local current_login_shell
+    current_login_shell=$(getent passwd "$USER" 2>/dev/null | cut -d: -f7)
+    [ -z "$current_login_shell" ] && current_login_shell="${SHELL:-/bin/bash}"
+
+    if [ -n "$zsh_bin" ] && [[ ! "$current_login_shell" =~ /zsh$ ]]; then
         if [ "${DRY_RUN:-false}" = "true" ]; then
-            ui_dryrun "Would prompt to set default shell to ${zsh_bin} (current: ${SHELL})"
+            ui_dryrun "Would prompt to set default shell to ${zsh_bin} (current login shell: ${current_login_shell})"
         else
-            if [ "${ASSUME_YES:-false}" = "true" ] || ui_confirm "Your current shell is ${SHELL}. Set default shell to zsh (${zsh_bin})?" true; then
-                if chsh -s "$zsh_bin" "$USER" 2>/dev/null; then
-                    ui_success "Default shell set to ${zsh_bin}"
+            if [ "${ASSUME_YES:-false}" = "true" ] || ui_confirm "Your current login shell is ${current_login_shell}. Set default shell to zsh (${zsh_bin})?" true; then
+                local changed=false
+                if command -v sudo >/dev/null 2>&1; then
+                    if sudo usermod -s "$zsh_bin" "$USER" >/dev/null 2>&1; then
+                        changed=true
+                    fi
+                fi
+                if [ "$changed" = "false" ]; then
+                    if chsh -s "$zsh_bin" >/dev/null 2>&1 || chsh -s "$zsh_bin" "$USER" >/dev/null 2>&1; then
+                        changed=true
+                    fi
+                fi
+
+                if [ "$changed" = "true" ]; then
+                    ui_success "Default login shell set to ${zsh_bin}"
                 else
-                    ui_warn "Could not change default shell automatically. You can run: chsh -s ${zsh_bin}"
+                    ui_info "Note: To change default shell manually, run: chsh -s ${zsh_bin}"
                 fi
             fi
         fi
+    else
+        ui_info "Default login shell is already zsh (${current_login_shell})"
     fi
 }

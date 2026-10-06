@@ -15,7 +15,18 @@ backup_dconf() {
     if [ "${DRY_RUN:-false}" = "true" ]; then
         ui_dryrun "Would export dconf settings to ${dconf_file}"
     else
-        dconf dump / > "$dconf_file"
+        # Dump dconf and filter out non-writable system schemas (e.g. login-screen)
+        dconf dump / 2>/dev/null | awk '
+            BEGIN { skip = 0 }
+            /^\[/ {
+                if ($0 ~ /^\[org\/gnome\/login-screen\]/) {
+                    skip = 1
+                } else {
+                    skip = 0
+                }
+            }
+            !skip { print }
+        ' > "$dconf_file"
         local lines
         lines=$(wc -l < "$dconf_file")
         ui_success "Exported dconf settings (${lines} lines) to ${dconf_file}"
@@ -40,10 +51,26 @@ restore_dconf() {
     if [ "${DRY_RUN:-false}" = "true" ]; then
         ui_dryrun "Would load dconf settings: dconf load / < ${dconf_file}"
     else
-        if dconf load / < "$dconf_file"; then
+        # Filter out any non-writable system schemas before loading
+        local tmp_dconf
+        tmp_dconf=$(mktemp)
+        awk '
+            BEGIN { skip = 0 }
+            /^\[/ {
+                if ($0 ~ /^\[org\/gnome\/login-screen\]/) {
+                    skip = 1
+                } else {
+                    skip = 0
+                }
+            }
+            !skip { print }
+        ' "$dconf_file" > "$tmp_dconf"
+
+        if dconf load / < "$tmp_dconf"; then
             ui_success "Restored desktop dconf settings"
         else
             ui_warn "Failed to restore some dconf settings"
         fi
+        rm -f "$tmp_dconf"
     fi
 }
